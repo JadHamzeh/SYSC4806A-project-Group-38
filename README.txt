@@ -1,4 +1,6 @@
-1- Perk manager
+Build Status --> [![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
+
+### 1 - Perk manager
 The User can create a Profile with all the memberships and cards they have: Air Miles, CAA, credit card etc.
 A "Perk" is some kind of discount for a given membership and a given product: 10% off movies with a Visa card,
 free domestic flight with 10,000 Air Miles, etc. Perks may also have limitations in geographic area and in

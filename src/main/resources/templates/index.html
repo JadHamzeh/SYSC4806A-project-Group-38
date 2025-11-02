@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        /* Base styling for all buttons */
+        .nav-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- STYLES MODIFIED --- */
+
+        /* Style for primary actions (Login, Sign Up) */
+        .primary-button {
+            background-color: #007bff;
+        }
+
+        .primary-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome to the Perk Manager</h1>
+
+
+<div>
+    <a href="login.html" class="nav-button primary-button">Login</a>
+
+    <a href="signup.html" class="nav-button primary-button">Sign Up</a>
+
+    <a href="dashboard.html" class="nav-button primary-button">Continue as Guest</a>
+
+</div>
+
+</body>
+</html>

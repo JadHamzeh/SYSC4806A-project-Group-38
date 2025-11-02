@@ -15,9 +15,13 @@ public class PerkController {
     private PerkService perkService;
 
     @GetMapping("/search")
-    public String perkSearch(@RequestParam(required = false) String query, @AuthenticationPrincipal User user, Model model){
+    public String perkSearch(@RequestParam String MembershipType, Model model){
+        if (MembershipType != null){
 
-        return query;
+        }
+
+
+        return MembershipType;
     }
 
     @PostMapping

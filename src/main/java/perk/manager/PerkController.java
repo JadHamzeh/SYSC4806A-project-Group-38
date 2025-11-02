@@ -85,7 +85,7 @@ public class PerkController {
         return "";
     }
 
-    @PostMapping("/{perkId}/upvote")
+    @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, false);
         return "";

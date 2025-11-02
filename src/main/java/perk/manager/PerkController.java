@@ -14,14 +14,21 @@ public class PerkController {
     @Autowired
     private PerkService perkService;
 
+    private MembershipTypeRepository membershipTypeRepository;
+
     @GetMapping("/search")
     public String perkSearch(@RequestParam String MembershipType, Model model){
         if (MembershipType != null){
-
         }
 
 
         return MembershipType;
+    }
+
+    @GetMapping("/new")
+    public String newPerkForm(Model model) {
+        model.addAttribute("memberships", membershipTypeRepository.findAll());
+        return "";
     }
 
     @PostMapping
@@ -38,21 +45,13 @@ public class PerkController {
 
         model.addAttribute("perk", createdPerk);
 
-        model.addAttribute("perk", createdPerk);
 
-        return title;
+        return "";
     }
 
     @PostMapping("/{perkId}/upvote")
-    public String upvotePerk(
-            @PathVariable Long perkId,
-            @AuthenticationPrincipal User user,
-            Model model) {
-
-        //Perk perk = perkService.vote(perkId, true);
-        //model.addAttribute("perk", perk);
-
-
+    public String upvotePerk(@PathVariable Long perkId) {
+        perkService.vote(perkId, true);
         return "";
     }
 

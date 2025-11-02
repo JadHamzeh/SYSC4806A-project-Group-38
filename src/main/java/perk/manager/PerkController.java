@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @RequestMapping("/perks")
@@ -16,19 +18,42 @@ public class PerkController {
 
     private MembershipTypeRepository membershipTypeRepository;
 
-    @GetMapping("/search")
-    public String perkSearch(@RequestParam String MembershipType, Model model){
-        if (MembershipType != null){
+    @GetMapping("/dashboard")
+    public String perksPage( @AuthenticationPrincipal User user, Model model) {
+
+        if (user != null) {
+            // User logged in
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("currentUser", user);
+        } else {
+            // User NOT logged in
+            model.addAttribute("isLoggedIn", false);
         }
 
-
-        return MembershipType;
+        model.addAttribute("perks", perkService.getAllPerks());
+        return "dashboard";
     }
 
-    @GetMapping("/new")
-    public String newPerkForm(Model model) {
-        model.addAttribute("memberships", membershipTypeRepository.findAll());
-        return "";
+    @GetMapping("/dashboard")
+    public String perkSearch(
+            @RequestParam String MembershipType,
+            @RequestParam(required = false, defaultValue = "votes") String sortBy,
+            Model model){
+
+        List<Perk> perks = perkService.getAllPerks();
+
+        if (sortBy.equalsIgnoreCase("votes")) {
+            perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
+        } else if (sortBy.equalsIgnoreCase("expiry")) {
+            perks.sort(Comparator.comparing(Perk::getExpiryDate));
+        } else if (sortBy.equalsIgnoreCase("relevance")) {
+            perkService.searchByMembership(MembershipType);
+        }
+
+        model.addAttribute("perks", perks);
+        model.addAttribute("sortBy", sortBy);
+
+        return "dashboard";
     }
 
     @PostMapping
@@ -45,13 +70,21 @@ public class PerkController {
 
         model.addAttribute("perk", createdPerk);
 
+        model.addAttribute("perk", createdPerk);
 
-        return "";
+        return title;
     }
 
     @PostMapping("/{perkId}/upvote")
-    public String upvotePerk(@PathVariable Long perkId) {
-        perkService.vote(perkId, true);
+    public String upvotePerk(
+            @PathVariable Long perkId,
+            @AuthenticationPrincipal User user,
+            Model model) {
+
+        //Perk perk = perkService.vote(perkId, true);
+        //model.addAttribute("perk", perk);
+
+
         return "";
     }
 

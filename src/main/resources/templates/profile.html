@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .section-title {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .perks-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .perk-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .perk-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+
+        .perk-item .title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .perk-item .votes {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>👤 My Profile</h1>
+        <a href="/perks/dashboard" class="btn btn-primary">← Back to Dashboard</a>
+    </div>
+
+    <div class="profile-card" th:if="${user != null}">
+        <h2 class="section-title">Profile Information</h2>
+        
+        <div class="profile-info">
+            <div class="info-item">
+                <label>Username</label>
+                <div class="value" th:text="${user.username}">Username</div>
+            </div>
+            <div class="info-item">
+                <label>Member Since</label>
+                <div class="value">Recently Joined</div>
+            </div>
+            <div class="info-item">
+                <label>Total Perks Created</label>
+                <div class="value" th:text="${user.perks.size()}">0</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">My Perks</h2>
+        
+        <div id="perks-list" class="perks-list" th:if="${user.perks != null and !user.perks.isEmpty()}">
+            <div class="perk-item" 
+                 th:each="perk : ${user.perks}" 
+                 th:id="'my-perk-' + ${perk.id}">
+                <div>
+                    <div class="title" th:text="${perk.title}">Perk Title</div>
+                    <small th:text="${perk.membershipType.name}">Membership</small>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="votes" th:text="${perk.votes} + ' votes'">0 votes</div>
+                    <button class="delete-btn"
+                            hx-delete="/api/perks/${perk.id}"
+                            th:hx-delete="@{/api/perks/{id}(id=${perk.id})}"
+                            hx-confirm="Are you sure you want to delete this perk?"
+                            hx-target="#my-perk-${perk.id}"
+                            th:hx-target="'#my-perk-' + ${perk.id}"
+                            hx-swap="outerHTML swap:1s">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${user.perks == null or user.perks.isEmpty()}">
+            <p>You haven't created any perks yet.</p>
+            <button hx-get="/perks/new" 
+                    hx-target="#modal-content" 
+                    hx-swap="innerHTML"
+                    onclick="showModal()"
+                    class="btn btn-primary" 
+                    style="margin-top: 15px;">Create Your First Perk</button>
+        </div>
+    </div>
+
+    <div class="profile-card" th:unless="${user != null}">
+        <div class="empty-state">
+            <p>Please log in to view your profile.</p>
+            <a href="/login" class="btn btn-primary" style="margin-top: 15px;">Login</a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for creating perks (same as dashboard) -->
+<div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+        <div id="modal-content">
+            <!-- Content loaded via HTMX -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function showModal() {
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+
+    // Handle successful perk creation
+    document.body.addEventListener('perkCreated', function() {
+        document.getElementById('modal').style.display = 'none';
+        window.location.reload(); // Reload to show new perk
+    });
+</script>
+
+</body>
+</html>

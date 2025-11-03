@@ -166,3 +166,23 @@ The application uses JPA/Hibernate to automatically generate the database schema
 - CSRF protection disabled for API endpoints (enable in production)
 - Session-based authentication
 - Protected routes requiring authentication
+
+
+
+
+# UMLs
+
+## 1. User Registration Flow
+![alt text](image.png)
+
+## 2. User Login Flow
+![alt text](image-1.png)
+
+## 3. Perk Creation Flow
+![alt text](Untitled.png)
+
+## 4. Search & Filter Perks Flow
+![alt text](<Untitled (1).png>)
+
+## 5. Upvote/Downvote Flow
+![alt text](image-2.png)

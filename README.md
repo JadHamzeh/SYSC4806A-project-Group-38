@@ -173,16 +173,16 @@ The application uses JPA/Hibernate to automatically generate the database schema
 # UMLs
 
 ## 1. User Registration Flow
-![alt text](image.png)
+![alt text](diagrams/0.png)
 
 ## 2. User Login Flow
-![alt text](image-1.png)
+![alt text](diagrams/1.png)
 
 ## 3. Perk Creation Flow
-![alt text](Untitled.png)
+![alt text](diagrams/2.png)
 
 ## 4. Search & Filter Perks Flow
-![alt text](<Untitled (1).png>)
+![alt text](diagrams/3.png)
 
 ## 5. Upvote/Downvote Flow
-![alt text](image-2.png)
+![alt text](diagrams/4.png)

@@ -9,130 +9,292 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/perks")
 public class PerkController {
+
     @Autowired
     private PerkService perkService;
 
+    @Autowired
     private MembershipTypeRepository membershipTypeRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PerkRepository perkRepository;
+
     /**
-     * Displays the perks dashboard page.
+     * Displays the main dashboard page with all perks.
+     * Shows user authentication status and loads all available perks and membership types.
      *
-     * This method retrieves all available perks and determines whether a user
-     * is authenticated. It adds the appropriate user information and perks
-     * to the model for display on the dashboard.
-     *
-     * @param user the authenticated user, or null if not authenticated
-     * @param model the Spring MVC model for passing data to the view
-     * @return the name of the view template "dashboard"
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the name of the dashboard view template
      */
     @GetMapping("/dashboard")
-    public String perksPage( @AuthenticationPrincipal User user, Model model) {
-
-        if (user != null) {
-            // User logged in
+    public String perksPage(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+                            Model model) {
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getUsername()).orElse(null);
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("currentUser", user);
         } else {
-            // User NOT logged in
             model.addAttribute("isLoggedIn", false);
         }
 
         model.addAttribute("perks", perkService.getAllPerks());
+        model.addAttribute("memberships", membershipTypeRepository.findAll());
         return "dashboard";
     }
 
     /**
-     * Searches and sorts perks based on membership type and sorting criteria.
+     * Returns an HTMX fragment containing filtered and sorted perks.
+     * Used for dynamic updates without full page reloads.
      *
-     * This method retrieves perks and applies sorting based on the specified
-     * criteria: votes (descending), expiry date (ascending), or relevance
-     * (filtered by membership type).
-     *
-     * @param MembershipType the membership type to filter perks by
-     * @param sortBy the sorting criterion: "votes", "expiry", or "relevance" (default: "votes")
-     * @param model the Spring MVC model for passing data to the view
-     * @return the name of the view template "dashboard"
+     * @param membershipType optional filter by membership type name
+     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the perk list
      */
-    @GetMapping("/dashboard")
-    public String perkSearch(
-            @RequestParam String MembershipType,
+    @GetMapping("/search-fragment")
+    public String perkSearchFragment(
+            @RequestParam(required = false) String membershipType,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
-            Model model){
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+            Model model) {
 
-        List<Perk> perks = perkService.getAllPerks();
+        List<Perk> perks;
+
+        if (membershipType != null && !membershipType.isEmpty()) {
+            perks = perkService.searchByMembership(membershipType);
+        } else {
+            perks = perkService.getAllPerks();
+        }
 
         if (sortBy.equalsIgnoreCase("votes")) {
             perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
         } else if (sortBy.equalsIgnoreCase("expiry")) {
             perks.sort(Comparator.comparing(Perk::getExpiryDate));
-        } else if (sortBy.equalsIgnoreCase("relevance")) {
-            perkService.searchByMembership(MembershipType);
+        }
+
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getUsername()).orElse(null);
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("currentUser", user);
+        } else {
+            model.addAttribute("isLoggedIn", false);
         }
 
         model.addAttribute("perks", perks);
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("selectedMembership", membershipType);
+
+        return "fragments/perk-list :: perk-list";
+    }
+
+    /**
+     * Performs a full page search and filtering of perks.
+     * Returns the complete dashboard with filtered and sorted results.
+     *
+     * @param membershipType optional filter by membership type name
+     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the name of the dashboard view template with filtered results
+     */
+    @GetMapping("/search")
+    public String perkSearch(
+            @RequestParam(required = false) String membershipType,
+            @RequestParam(required = false, defaultValue = "votes") String sortBy,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+            Model model) {
+
+        List<Perk> perks;
+
+        if (membershipType != null && !membershipType.isEmpty()) {
+            perks = perkService.searchByMembership(membershipType);
+        } else {
+            perks = perkService.getAllPerks();
+        }
+
+        if (sortBy.equalsIgnoreCase("votes")) {
+            perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
+        } else if (sortBy.equalsIgnoreCase("expiry")) {
+            perks.sort(Comparator.comparing(Perk::getExpiryDate));
+        }
+
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getUsername()).orElse(null);
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("currentUser", user);
+        } else {
+            model.addAttribute("isLoggedIn", false);
+        }
+
+        model.addAttribute("perks", perks);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("memberships", membershipTypeRepository.findAll());
+        model.addAttribute("selectedMembership", membershipType);
 
         return "dashboard";
     }
 
     /**
-     * Displays the form for creating a new perk.
+     * Displays the form for creating a new perk as a Thymeleaf fragment.
+     * Requires user authentication - redirects to login if not authenticated.
      *
-     * This method retrieves all available membership types and adds them to
-     * the model to populate a dropdown or selection list in the perk creation form.
-     *
-     * @param model the Spring MVC model for passing data to the view
-     * @return the name of the view template "new-perk"
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the new perk form, or redirect to login
      */
     @GetMapping("/new")
-    public String newPerkForm(Model model) {
+    public String newPerkForm(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+                              Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
         model.addAttribute("memberships", membershipTypeRepository.findAll());
-        return "new-perk";
+        return "fragments/new-perk-form :: new-perk-form";
     }
 
     /**
-     * Processes the creation of a new perk.
-     *
-     * This method accepts perk details from a form submission, creates a new
-     * perk associated with the authenticated user, and redirects to the dashboard.
+     * Handles the creation of a new perk with full page navigation.
+     * Validates user authentication and delegates to the service layer.
      *
      * @param title the title of the perk
-     * @param description the description of the perk
-     * @param region the geographical region where the perk is available
-     * @param membershipName the name of the membership type associated with the perk
+     * @param description detailed description of the perk
+     * @param region the geographical region where the perk is valid
+     * @param membershipType the membership type associated with this perk
      * @param expiryDate the date when the perk expires
-     * @param user the authenticated user creating the perk
-     * @param model the Spring MVC model for passing data to the view
-     * @return a redirect to the perks dashboard
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return redirect to dashboard on success, or back to form with error
      */
     @PostMapping("/create")
     public String createPerk(
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam String region,
-            @RequestParam String membershipName,
+            @RequestParam String membershipType,
             @RequestParam LocalDate expiryDate,
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             Model model) {
 
-        Perk createdPerk = perkService.createPerk(title, description, region, membershipName, user.getId(), expiryDate);
+        if (principal == null) {
+            return "redirect:/login";
+        }
 
-        model.addAttribute("perk", createdPerk);
+        User user = userService.findByUsername(principal.getUsername()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
 
-        return "redirect:/perks/dashboard";
+        try {
+            perkService.createPerk(title, description, region, membershipType, user.getId(), expiryDate);
+            return "redirect:/perks/dashboard";
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to create perk: " + e.getMessage());
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
     }
 
     /**
-     * Processes an upvote for a specific perk.
-     * This method increments the vote count for the specified perk and
-     * redirects back to the dashboard.
+     * Handles the creation of a new perk via HTMX fragment submission.
+     * Returns appropriate fragment responses for success or error states.
+     *
+     * @param title the title of the perk
+     * @param description detailed description of the perk
+     * @param region the geographical region where the perk is valid
+     * @param membershipType the membership type associated with this perk
+     * @param expiryDate the date when the perk expires
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return success message fragment on success
+     */
+    @PostMapping("/create-fragment")
+    public String createPerkFragment(
+            @RequestParam String title,
+            @RequestParam String description,
+            @RequestParam String region,
+            @RequestParam String membershipType,
+            @RequestParam LocalDate expiryDate,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+            Model model) {
+
+        if (principal == null) {
+            model.addAttribute("error", "Please log in to create perks");
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
+
+        User user = userService.findByUsername(principal.getUsername()).orElse(null);
+        if (user == null) {
+            model.addAttribute("error", "User not found");
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
+
+        try {
+            perkService.createPerk(title, description, region, membershipType, user.getId(), expiryDate);
+            return "fragments/new-perk-form :: success-message";
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to create perk: " + e.getMessage());
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
+    }
+
+    /**
+     * Handles upvoting a perk via HTMX fragment request.
+     * Returns the updated vote section fragment with new vote count.
      *
      * @param perkId the ID of the perk to upvote
-     * @return a redirect to the perks dashboard
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the vote section
+     */
+    @PostMapping("/{perkId}/upvote-fragment")
+    public String upvotePerkFragment(@PathVariable Long perkId, Model model) {
+        perkService.vote(perkId, true);
+        Optional<Perk> perkOpt = perkRepository.findById(perkId);
+        if (perkOpt.isPresent()) {
+            model.addAttribute("perk", perkOpt.get());
+            return "fragments/perk-list :: vote-section";
+        }
+        return "fragments/perk-list :: vote-section";
+    }
+
+    /**
+     * Handles downvoting a perk via HTMX fragment request.
+     * Returns the updated vote section fragment with new vote count.
+     *
+     * @param perkId the ID of the perk to downvote
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the vote section
+     */
+    @PostMapping("/{perkId}/downvote-fragment")
+    public String downvotePerkFragment(@PathVariable Long perkId, Model model) {
+        perkService.vote(perkId, false);
+        Optional<Perk> perkOpt = perkRepository.findById(perkId);
+        if (perkOpt.isPresent()) {
+            model.addAttribute("perk", perkOpt.get());
+            return "fragments/perk-list :: vote-section";
+        }
+        return "fragments/perk-list :: vote-section";
+    }
+
+    /**
+     * Handles upvoting a perk with full page navigation.
+     * Increments the vote count and redirects back to the dashboard.
+     *
+     * @param perkId the ID of the perk to upvote
+     * @return redirect to the dashboard page
      */
     @PostMapping("/{perkId}/upvote")
     public String upvotePerk(@PathVariable Long perkId) {
@@ -141,19 +303,15 @@ public class PerkController {
     }
 
     /**
-     * Processes a downvote for a specific perk.
-     *
-     * This method decrements the vote count for the specified perk and
-     * redirects back to the dashboard.
+     * Handles downvoting a perk with full page navigation.
+     * Decrements the vote count and redirects back to the dashboard.
      *
      * @param perkId the ID of the perk to downvote
-     * @return a redirect to the perks dashboard
+     * @return redirect to the dashboard page
      */
     @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, false);
         return "redirect:/perks/dashboard";
     }
-
-
 }

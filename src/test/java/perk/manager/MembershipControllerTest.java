@@ -56,7 +56,7 @@ public class MembershipControllerTest {
 
         String result = membershipController.addMemberships(2L, user, model);
 
-        assertEquals("", result);
+        assertEquals("redirect:/user/memberships", result);
         verify(userMembershipService).assignMembership(user, visa);
         verify(model).addAttribute("userMemberships", updatedList);
     }
@@ -68,14 +68,14 @@ public class MembershipControllerTest {
     }
 
     @Test
-    void testRemoveMembership_Success() {
+    void testRemoveMembership() {
         List<MembershipType> updatedList = Arrays.asList(visa);
         when(userMembershipRepository.findById(1L)).thenReturn(Optional.of(userMembership));
         when(userMembershipService.getMembershipsForUser(user)).thenReturn(updatedList);
 
         String result = membershipController.removeMemberships(1L, user, model);
 
-        assertEquals("", result);
+        assertEquals("redirect:/user/memberships", result);
         verify(userMembershipService).removeMembership(userMembership);
         verify(model).addAttribute("userMemberships", updatedList);
     }

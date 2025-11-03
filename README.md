@@ -49,7 +49,7 @@ The system comes pre-loaded with popular Canadian membership programs:
 
 ### Prerequisites
 - Git
-- Java JDK 17 (or newer)
+- Java JDK 21
 - Apache Maven
 - Docker (optional, for containerized deployment)
 

@@ -27,6 +27,14 @@ public class PerkController {
     @Autowired
     private PerkRepository perkRepository;
 
+    /**
+     * Displays the main dashboard page with all perks.
+     * Shows user authentication status and loads all available perks and membership types.
+     *
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the name of the dashboard view template
+     */
     @GetMapping("/dashboard")
     public String perksPage(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
                             Model model) {
@@ -43,6 +51,16 @@ public class PerkController {
         return "dashboard";
     }
 
+    /**
+     * Returns an HTMX fragment containing filtered and sorted perks.
+     * Used for dynamic updates without full page reloads.
+     *
+     * @param membershipType optional filter by membership type name
+     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the perk list
+     */
     @GetMapping("/search-fragment")
     public String perkSearchFragment(
             @RequestParam(required = false) String membershipType,
@@ -79,6 +97,16 @@ public class PerkController {
         return "fragments/perk-list :: perk-list";
     }
 
+    /**
+     * Performs a full page search and filtering of perks.
+     * Returns the complete dashboard with filtered and sorted results.
+     *
+     * @param membershipType optional filter by membership type name
+     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal the authenticated user principal, null if user is not logged in
+     * @param model the Spring MVC model to pass data to the view
+     * @return the name of the dashboard view template with filtered results
+     */
     @GetMapping("/search")
     public String perkSearch(
             @RequestParam(required = false) String membershipType,
@@ -116,6 +144,14 @@ public class PerkController {
         return "dashboard";
     }
 
+    /**
+     * Displays the form for creating a new perk as a Thymeleaf fragment.
+     * Requires user authentication - redirects to login if not authenticated.
+     *
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the new perk form, or redirect to login
+     */
     @GetMapping("/new")
     public String newPerkForm(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
                               Model model) {
@@ -127,6 +163,19 @@ public class PerkController {
         return "fragments/new-perk-form :: new-perk-form";
     }
 
+    /**
+     * Handles the creation of a new perk with full page navigation.
+     * Validates user authentication and delegates to the service layer.
+     *
+     * @param title the title of the perk
+     * @param description detailed description of the perk
+     * @param region the geographical region where the perk is valid
+     * @param membershipType the membership type associated with this perk
+     * @param expiryDate the date when the perk expires
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return redirect to dashboard on success, or back to form with error
+     */
     @PostMapping("/create")
     public String createPerk(
             @RequestParam String title,
@@ -156,6 +205,19 @@ public class PerkController {
         }
     }
 
+    /**
+     * Handles the creation of a new perk via HTMX fragment submission.
+     * Returns appropriate fragment responses for success or error states.
+     *
+     * @param title the title of the perk
+     * @param description detailed description of the perk
+     * @param region the geographical region where the perk is valid
+     * @param membershipType the membership type associated with this perk
+     * @param expiryDate the date when the perk expires
+     * @param principal the authenticated user principal
+     * @param model the Spring MVC model to pass data to the view
+     * @return success message fragment on success
+     */
     @PostMapping("/create-fragment")
     public String createPerkFragment(
             @RequestParam String title,
@@ -189,6 +251,14 @@ public class PerkController {
         }
     }
 
+    /**
+     * Handles upvoting a perk via HTMX fragment request.
+     * Returns the updated vote section fragment with new vote count.
+     *
+     * @param perkId the ID of the perk to upvote
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the vote section
+     */
     @PostMapping("/{perkId}/upvote-fragment")
     public String upvotePerkFragment(@PathVariable Long perkId, Model model) {
         perkService.vote(perkId, true);
@@ -200,6 +270,14 @@ public class PerkController {
         return "fragments/perk-list :: vote-section";
     }
 
+    /**
+     * Handles downvoting a perk via HTMX fragment request.
+     * Returns the updated vote section fragment with new vote count.
+     *
+     * @param perkId the ID of the perk to downvote
+     * @param model the Spring MVC model to pass data to the view
+     * @return the Thymeleaf fragment path for the vote section
+     */
     @PostMapping("/{perkId}/downvote-fragment")
     public String downvotePerkFragment(@PathVariable Long perkId, Model model) {
         perkService.vote(perkId, false);
@@ -211,12 +289,26 @@ public class PerkController {
         return "fragments/perk-list :: vote-section";
     }
 
+    /**
+     * Handles upvoting a perk with full page navigation.
+     * Increments the vote count and redirects back to the dashboard.
+     *
+     * @param perkId the ID of the perk to upvote
+     * @return redirect to the dashboard page
+     */
     @PostMapping("/{perkId}/upvote")
     public String upvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, true);
         return "redirect:/perks/dashboard";
     }
 
+    /**
+     * Handles downvoting a perk with full page navigation.
+     * Decrements the vote count and redirects back to the dashboard.
+     *
+     * @param perkId the ID of the perk to downvote
+     * @return redirect to the dashboard page
+     */
     @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, false);

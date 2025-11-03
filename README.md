@@ -3,20 +3,16 @@
 A web application for discovering, sharing, and managing membership perks across various reward programs. Users can browse perks from different membership programs (credit cards, loyalty programs, etc.), contribute their own discoveries, and vote on the most valuable benefits.
 
 
-[![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
-
-
-
 ## Contributors
-- Abduallah Aldabibi
-- Adam bheeler
-- Omar hamzat
-- Jad hamza 
-- Akshun Kalra
+- Abduallah Aldabibi 101239527
+- Adam Beehler 101220459
+- Omar Hamzat 101244220 
+- Jad Hamzeh 101219884
+- Akshun Kalra 101189457
 
 ## Tech Stack
 - **Backend**: Spring Boot, Spring MVC, Spring Data JPA, Spring Security
-- **Frontend**: Thymeleaf, HTML, CSS
+- **Frontend**: Thymeleaf, HTML, CSS, HTMX
 - **Build**: Apache Maven
 - **Database**: JPA/Hibernate ORM
 - **Security**: BCrypt password encryption
@@ -53,7 +49,7 @@ The system comes pre-loaded with popular Canadian membership programs:
 
 ### Prerequisites
 - Git
-- Java JDK 17 (or newer)
+- Java JDK 21
 - Apache Maven
 - Docker (optional, for containerized deployment)
 
@@ -143,6 +139,10 @@ Run all tests with:
 
 
 **Live Application URL**: https://sysc4806group38assignment-hvesg2fhasdtb5aj.canadacentral-01.azurewebsites.net/
+
+## Azure Server Build
+
+[![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
 
 ## Database Schema
 

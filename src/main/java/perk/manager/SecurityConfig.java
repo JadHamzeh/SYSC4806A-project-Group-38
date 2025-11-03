@@ -1,5 +1,6 @@
 package perk.manager;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,6 +47,15 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if("true".equals(request.getHeader("HX-Request"))){
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            }
+                            else {
+                                response.sendRedirect("/login");
+                            }
+                        }))
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 

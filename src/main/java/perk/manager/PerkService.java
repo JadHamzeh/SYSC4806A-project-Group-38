@@ -49,4 +49,8 @@ public class PerkService {
             perkRepository.save(perk);
         }
     }
+
+    public void deletePerk(Long perkId) {
+        perkRepository.deleteById(perkId);
+    }
 }

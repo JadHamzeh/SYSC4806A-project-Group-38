@@ -18,21 +18,21 @@ public class PerkController {
 
     private MembershipTypeRepository membershipTypeRepository;
 
-    @GetMapping("/dashboard")
-    public String perksPage( @AuthenticationPrincipal User user, Model model) {
-
-        if (user != null) {
-            // User logged in
-            model.addAttribute("isLoggedIn", true);
-            model.addAttribute("currentUser", user);
-        } else {
-            // User NOT logged in
-            model.addAttribute("isLoggedIn", false);
-        }
-
-        model.addAttribute("perks", perkService.getAllPerks());
-        return "dashboard";
-    }
+//    @GetMapping("/dashboard")
+//    public String perksPage( @AuthenticationPrincipal User user, Model model) {
+//
+//        if (user != null) {
+//            // User logged in
+//            model.addAttribute("isLoggedIn", true);
+//            model.addAttribute("currentUser", user);
+//        } else {
+//            // User NOT logged in
+//            model.addAttribute("isLoggedIn", false);
+//        }
+//
+//        model.addAttribute("perks", perkService.getAllPerks());
+//        return "dashboard";
+//    }
 
     @GetMapping("/search")
     public String perkSearch(

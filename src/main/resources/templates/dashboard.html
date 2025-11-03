@@ -322,27 +322,22 @@
     </div>
 </div>
 
-<!-- Modal for creating perks -->
 <div id="modal">
     <div class="modal-content">
         <div id="modal-content">
-            <!-- Content loaded via HTMX -->
         </div>
     </div>
 </div>
 
 <script>
-    // Close modal when clicking outside
     document.getElementById('modal').addEventListener('click', function(e) {
         if (e.target === this) {
             this.classList.remove('show');
         }
     });
 
-    // Handle successful perk creation
     document.body.addEventListener('perkCreated', function() {
         document.getElementById('modal').classList.remove('show');
-        // Refresh the perks list
         htmx.ajax('GET', '/perks/search-fragment', {target: '#perks-container'});
     });
 </script>

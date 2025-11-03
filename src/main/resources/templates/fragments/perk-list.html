@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="perk-list">
+    <div class="perks-grid" th:if="${perks != null and !perks.isEmpty()}">
+        <div class="perk-card" th:each="perk : ${perks}" th:id="'perk-' + ${perk.id}">
+            <div class="perk-header">
+                <h3 class="perk-title" th:text="${perk.title}">Perk Title</h3>
+                <span class="perk-membership" th:text="${perk.membershipType.name}">Membership</span>
+            </div>
+            <p class="perk-description" th:text="${perk.description}">Perk description goes here</p>
+            <div class="perk-info">
+                <span>📍 <span th:text="${perk.region}">Region</span></span>
+                <span>📅 Expires: <span th:text="${#temporals.format(perk.expiryDate, 'MMM dd, yyyy')}">Date</span></span>
+            </div>
+            <div class="perk-footer">
+                <div class="vote-section">
+                    <button class="vote-btn"
+                            hx-post="/perks/${perk.id}/upvote-fragment"
+                            th:hx-post="@{/perks/{id}/upvote-fragment(id=${perk.id})}"
+                            hx-target="#perk-${perk.id} .vote-section"
+                            th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                            hx-swap="outerHTML">👍</button>
+                    <span class="votes-count" th:text="${perk.votes} + ' votes'">0 votes</span>
+                    <button class="vote-btn"
+                            hx-post="/perks/${perk.id}/downvote-fragment"
+                            th:hx-post="@{/perks/{id}/downvote-fragment(id=${perk.id})}"
+                            hx-target="#perk-${perk.id} .vote-section"
+                            th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                            hx-swap="outerHTML">👎</button>
+                </div>
+                <small style="color: #999;">by <span th:text="${perk.createdBy.username}">User</span></small>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-perks" th:if="${perks == null or perks.isEmpty()}">
+        <h2>No perks found</h2>
+        <p>Be the first to create one!</p>
+        <button th:if="${isLoggedIn}" 
+                hx-get="/perks/new" 
+                hx-target="#modal-content" 
+                hx-swap="innerHTML"
+                onclick="document.getElementById('modal').classList.add('show')"
+                class="btn btn-primary" 
+                style="margin-top: 20px;">Create Perk</button>
+    </div>
+</th:block>
+
+<th:block th:fragment="vote-section">
+    <div class="vote-section">
+        <button class="vote-btn"
+                hx-post="/perks/${perk.id}/upvote-fragment"
+                th:hx-post="@{/perks/{id}/upvote-fragment(id=${perk.id})}"
+                hx-target="#perk-${perk.id} .vote-section"
+                th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                hx-swap="outerHTML">👍</button>
+        <span class="votes-count" th:text="${perk.votes} + ' votes'">0 votes</span>
+        <button class="vote-btn"
+                hx-post="/perks/${perk.id}/downvote-fragment"
+                th:hx-post="@{/perks/{id}/downvote-fragment(id=${perk.id})}"
+                hx-target="#perk-${perk.id} .vote-section"
+                th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                hx-swap="outerHTML">👎</button>
+    </div>
+</th:block>
+
+</body>
+</html>

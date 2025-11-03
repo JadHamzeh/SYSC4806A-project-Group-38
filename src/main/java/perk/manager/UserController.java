@@ -41,26 +41,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> payload) {
-        String username = payload.get("username");
-        String password = payload.get("password");
-
-        Optional<User> userOpt = userService.findByUsername(username);
-
-        if (userOpt.isEmpty() || !userService.verifyPassword(password, userOpt.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
-        }
-
-        User user = userOpt.get();
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Login successful");
-        response.put("userId", user.getId());
-        response.put("username", user.getUsername());
-
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> payload) {
+//        String username = payload.get("username");
+//        String password = payload.get("password");
+//
+//        Optional<User> userOpt = userService.findByUsername(username);
+//
+//        if (userOpt.isEmpty() || !userService.verifyPassword(password, userOpt.get().getPassword())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
+//        }
+//
+//        User user = userOpt.get();
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("message", "Login successful");
+//        response.put("userId", user.getId());
+//        response.put("username", user.getUsername());
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {

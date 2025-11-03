@@ -3,6 +3,7 @@ package perk.manager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -12,13 +13,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index", "/index.html", "/css/**", "/js/**").permitAll()
+
+                        .requestMatchers("/", "/index", "/index.html",
+                                "/login", "/signup", "/dashboard",
+                                "/css/**", "/js/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login.disable())  // disable default login
-                .httpBasic(basic -> basic.disable()); // disable basic auth
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 }
-

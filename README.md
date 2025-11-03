@@ -7,7 +7,7 @@ A web application for discovering, sharing, and managing membership perks across
 - Abduallah Aldabibi
 - Adam Beehler
 - Omar Hamzat
-- Jad Hamzeh
+- Jad Hamzeh 101219884
 - Akshun Kalra
 
 ## Tech Stack

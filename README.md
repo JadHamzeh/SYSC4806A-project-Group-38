@@ -170,7 +170,7 @@ The application uses JPA/Hibernate to automatically generate the database schema
 
 
 
-# UMLs
+# Sequence Diagrams
 
 ## 1. User Registration Flow
 ![alt text](diagrams/0.png)
@@ -186,3 +186,20 @@ The application uses JPA/Hibernate to automatically generate the database schema
 
 ## 5. Upvote/Downvote Flow
 ![alt text](diagrams/4.png)
+
+# UMLs
+
+## 1. User
+![alt_text](diagrams/User_UML%20diagram.jpg)
+
+## 2. Perk
+![alt_text](diagrams/Perk_UML%20diagram.jpg)
+
+## 3. Data Loader
+![alt_text](diagrams/DataLoader_UML%20diagram.jpg)
+
+## 4. User Controller
+![alt_text](diagrams/UserController_UML%20diagram.jpg)
+
+## 5. Perk Controller
+![alt_text](diagrams/PerkController_%20UML%20diagram.jpg)

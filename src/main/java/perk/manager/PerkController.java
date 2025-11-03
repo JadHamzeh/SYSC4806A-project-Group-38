@@ -34,7 +34,7 @@ public class PerkController {
         return "dashboard";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/search")
     public String perkSearch(
             @RequestParam String MembershipType,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,

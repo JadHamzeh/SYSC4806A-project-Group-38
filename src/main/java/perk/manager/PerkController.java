@@ -59,7 +59,7 @@ public class PerkController {
     @GetMapping("/new")
     public String newPerkForm(Model model) {
         model.addAttribute("memberships", membershipTypeRepository.findAll());
-        return "";
+        return "new-perk";
     }
 
     @PostMapping
@@ -76,19 +76,19 @@ public class PerkController {
 
         model.addAttribute("perk", createdPerk);
 
-        return title;
+        return "redirect:/perks/dashboard";
     }
 
     @PostMapping("/{perkId}/upvote")
     public String upvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, true);
-        return "";
+        return "redirect:/perks/dashboard";
     }
 
     @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, false);
-        return "";
+        return "redirect:/perks/dashboard";
     }
 
 

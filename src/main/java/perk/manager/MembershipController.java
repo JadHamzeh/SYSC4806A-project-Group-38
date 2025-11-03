@@ -24,7 +24,7 @@ public class MembershipController {
     @Autowired
     private UserMembershipRepository userMembershipRepository;
 
-    @GetMapping("/add")
+    @GetMapping
     public String ListMemberships(@AuthenticationPrincipal User user, Model model){
         List<MembershipType> userMemberships = userMembershipService.getMembershipsForUser(user);
 
@@ -34,7 +34,7 @@ public class MembershipController {
         model.addAttribute("usermemberships", userMemberships);
         model.addAttribute("Memberships", Memberships);
 
-        return "";
+        return "user-memberships";
 
 
     }
@@ -46,7 +46,7 @@ public class MembershipController {
 
         model.addAttribute("availableMemberships", availableMemberships);
 
-        return "";
+        return "add-membership";
     }
 
     @PostMapping("/add")
@@ -59,7 +59,7 @@ public class MembershipController {
 
         model.addAttribute("userMemberships", newMembershipList);
 
-        return"";
+        return "redirect:/user/memberships";
 
     }
 
@@ -72,7 +72,7 @@ public class MembershipController {
         List<MembershipType> newMembershipList = userMembershipService.getMembershipsForUser(user);
         model.addAttribute("userMemberships", newMembershipList);
 
-        return "";
+        return "redirect:/user/memberships";
 
 
     }

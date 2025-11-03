@@ -24,7 +24,7 @@ public class MembershipController {
     @Autowired
     private UserMembershipRepository userMembershipRepository;
 
-    @GetMapping
+    @GetMapping("/list")
     public String ListMemberships(@AuthenticationPrincipal User user, Model model){
         List<MembershipType> userMemberships = userMembershipService.getMembershipsForUser(user);
 
@@ -39,7 +39,7 @@ public class MembershipController {
 
     }
 
-    @GetMapping("/add")
+    @GetMapping("/new")
     public String addNewMembership(@AuthenticationPrincipal User user, Model model){
         List<MembershipType> userMemberships = userMembershipService.getMembershipsForUser(user);
         List<MembershipType> availableMemberships = membershipTypeRepository.findAll().stream().filter(m -> !userMemberships.contains(m)).toList();

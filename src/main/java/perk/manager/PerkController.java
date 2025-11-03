@@ -13,23 +13,24 @@ import java.util.List;
 @Controller
 @RequestMapping("/perks")
 public class PerkController {
-
-    private final PerkService perkService;
-    private final MembershipTypeRepository membershipTypeRepository;
-
     @Autowired
-    public PerkController(PerkService perkService, MembershipTypeRepository membershipTypeRepository) {
-        this.perkService = perkService;
-        this.membershipTypeRepository = membershipTypeRepository;
-    }
+    private PerkService perkService;
+
+    private MembershipTypeRepository membershipTypeRepository;
 
     @GetMapping("/dashboard")
-    public String perksPage(@AuthenticationPrincipal User user, Model model) {
+    public String perksPage( @AuthenticationPrincipal User user, Model model) {
 
-        model.addAttribute("isLoggedIn", user != null);
-        model.addAttribute("currentUser", user);
+        if (user != null) {
+            // User logged in
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("currentUser", user);
+        } else {
+            // User NOT logged in
+            model.addAttribute("isLoggedIn", false);
+        }
+
         model.addAttribute("perks", perkService.getAllPerks());
-
         return "dashboard";
     }
 
@@ -37,25 +38,20 @@ public class PerkController {
     public String perkSearch(
             @RequestParam String MembershipType,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
-            Model model) {
+            Model model){
 
-        List<Perk> perks;
+        List<Perk> perks = perkService.getAllPerks();
 
-        if (sortBy.equalsIgnoreCase("relevance")) {
-            perks = perkService.searchByMembership(MembershipType);
-        } else {
-            perks = perkService.getAllPerks();
-
-            if (sortBy.equalsIgnoreCase("votes")) {
-                perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
-            } else if (sortBy.equalsIgnoreCase("expiry")) {
-                perks.sort(Comparator.comparing(Perk::getExpiryDate));
-            }
+        if (sortBy.equalsIgnoreCase("votes")) {
+            perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
+        } else if (sortBy.equalsIgnoreCase("expiry")) {
+            perks.sort(Comparator.comparing(Perk::getExpiryDate));
+        } else if (sortBy.equalsIgnoreCase("relevance")) {
+            perkService.searchByMembership(MembershipType);
         }
 
         model.addAttribute("perks", perks);
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("membershipType", MembershipType);
 
         return "dashboard";
     }
@@ -63,8 +59,7 @@ public class PerkController {
     @GetMapping("/new")
     public String newPerkForm(Model model) {
         model.addAttribute("memberships", membershipTypeRepository.findAll());
-        model.addAttribute("perk", new Perk());
-        return "new-perk";
+        return "";
     }
 
     @PostMapping
@@ -77,21 +72,28 @@ public class PerkController {
             @AuthenticationPrincipal User user,
             Model model) {
 
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        Perk createdPerk = perkService.createPerk(
-                title, description, region, membershipName, user.getId(), expiryDate);
+        Perk createdPerk = perkService.createPerk(title, description, region, membershipName, user.getId(), expiryDate);
 
         model.addAttribute("perk", createdPerk);
 
-        return "redirect:/perks/dashboard";
+        return title;
     }
 
     @PostMapping("/{perkId}/upvote")
     public String upvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, true);
-        return "redirect:/perks/dashboard";
+        return "";
     }
+
+    @PostMapping("/{perkId}/downvote")
+    public String downvotePerk(@PathVariable Long perkId) {
+        perkService.vote(perkId, false);
+        return "";
+    }
+
+
+
+
+
+
 }

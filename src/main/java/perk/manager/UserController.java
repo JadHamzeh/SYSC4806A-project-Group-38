@@ -18,6 +18,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> payload) {
         String username = payload.get("username");

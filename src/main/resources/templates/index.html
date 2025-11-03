@@ -18,27 +18,29 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #5c6bc0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             text-align: center;
             padding: 20px;
-            color: #ffffff;
         }
 
-        .intro-section {
+        .hero {
+            color: white;
             margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
         }
 
-        .intro-title {
+        .hero h1 {
             font-size: 48px;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .intro-subtitle {
+        .hero p {
             font-size: 20px;
             opacity: 0.9;
         }
 
-        .feature-grid {
+        .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
@@ -47,8 +49,7 @@
         }
 
         .feature-card {
-            background-color: #ffffff;
-            color: #333333;
+            background: white;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -59,88 +60,111 @@
             transform: translateY(-5px);
         }
 
-        .feature-title {
-            color: #5c6bc0;
+        .feature-card h3 {
+            color: #667eea;
             margin-bottom: 10px;
             font-size: 20px;
         }
 
-        .feature-description {
+        .feature-card p {
+            color: #666;
             font-size: 14px;
             line-height: 1.6;
-            color: #444444;
         }
 
-        .navigation-buttons {
+        .cta-buttons {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .nav-btn {
+        .nav-button {
             display: inline-block;
             padding: 15px 35px;
             font-size: 18px;
             font-weight: bold;
             text-decoration: none;
+            color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .btn-primary {
-            background-color: #5c6bc0;
+        .primary-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: 2px solid white;
-            color: white;
         }
 
-        .btn-primary:hover {
-            background-color: #3f51b5;
+        .primary-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
         }
 
-        .btn-secondary {
-            background-color: #9fa8da;
-            border: 2px solid white;
-            color: white;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .btn-secondary:hover {
-            background-color: #7986cb;
-            transform: translateY(-3px);
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-<section class="intro-section">
-    <h1 class="intro-title"> Welcome to Perk Manager</h1>
-    <p class="intro-subtitle">Discover and share amazing membership perks and discounts</p>
-</section>
+<div class="hero">
+    <h1>Welcome to Perk Manager</h1>
+    <p>Discover and share amazing membership perks and discounts</p>
+</div>
 
-<section class="feature-grid">
+<div class="features">
     <div class="feature-card">
-        <h3 class="feature-title"> Track Perks</h3>
-        <p class="feature-description">Keep track of all your membership benefits and discounts in one place.</p>
+        <h3>📋 Track Perks</h3>
+        <p>Keep track of all your membership benefits and discounts in one place</p>
     </div>
-
     <div class="feature-card">
-        <h3 class="feature-title"> Search & Filter</h3>
-        <p class="feature-description">Find perks by membership type, region, and expiry date.</p>
+        <h3>🔍 Search & Filter</h3>
+        <p>Find perks by membership type, region, and expiry date</p>
     </div>
-
     <div class="feature-card">
-        <h3 class="feature-title"> Community Driven</h3>
-        <p class="feature-description">Share perks with others and vote on the most valuable deals.</p>
+        <h3>👥 Community Driven</h3>
+        <p>Share perks with others and vote on the most valuable deals</p>
     </div>
-</section>
+</div>
 
-<div class="navigation-buttons">
-    <a href="/login" class="nav-btn btn-primary">Login</a>
-    <a href="/signup" class="nav-btn btn-primary">Sign Up</a>
-    <a href="/perks/dashboard" class="nav-btn btn-secondary">Browse as Guest</a>
+<div class="cta-buttons">
+
+    <a th:href="@{/login}" class="nav-button primary-button">Login</a>
+
+    <a th:href="@{/signup}" class="nav-button primary-button">Sign Up</a>
+
+    <a th:href="@{/dashboard}" class="nav-button primary-button">Continue as Guest</a>
+
 </div>
 
 </body>

@@ -66,7 +66,7 @@ public class PerkController {
         return "new-perk";
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public String createPerk(
             @RequestParam String title,
             @RequestParam String description,

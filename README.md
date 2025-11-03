@@ -3,20 +3,16 @@
 A web application for discovering, sharing, and managing membership perks across various reward programs. Users can browse perks from different membership programs (credit cards, loyalty programs, etc.), contribute their own discoveries, and vote on the most valuable benefits.
 
 
-[![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
-
-
-
 ## Contributors
 - Abduallah Aldabibi
-- Adam bheeler
-- Omar hamzat
-- Jad hamza 
+- Adam Beehler
+- Omar Hamzat
+- Jad Hamzeh
 - Akshun Kalra
 
 ## Tech Stack
 - **Backend**: Spring Boot, Spring MVC, Spring Data JPA, Spring Security
-- **Frontend**: Thymeleaf, HTML, CSS
+- **Frontend**: Thymeleaf, HTML, CSS, HTMX
 - **Build**: Apache Maven
 - **Database**: JPA/Hibernate ORM
 - **Security**: BCrypt password encryption
@@ -143,6 +139,10 @@ Run all tests with:
 
 
 **Live Application URL**: https://sysc4806group38assignment-hvesg2fhasdtb5aj.canadacentral-01.azurewebsites.net/
+
+## Azure Server Build
+
+[![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
 
 ## Database Schema
 

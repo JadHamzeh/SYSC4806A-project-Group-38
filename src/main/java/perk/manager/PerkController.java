@@ -34,7 +34,7 @@ public class PerkController {
         return "dashboard";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/dashboard/search")
     public String perkSearch(
             @RequestParam String MembershipType,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
@@ -56,6 +56,12 @@ public class PerkController {
         return "dashboard";
     }
 
+    @GetMapping("/new")
+    public String newPerkForm(Model model) {
+        model.addAttribute("memberships", membershipTypeRepository.findAll());
+        return "";
+    }
+
     @PostMapping
     public String createPerk(
             @RequestParam String title,
@@ -70,23 +76,22 @@ public class PerkController {
 
         model.addAttribute("perk", createdPerk);
 
-        model.addAttribute("perk", createdPerk);
-
         return title;
     }
 
     @PostMapping("/{perkId}/upvote")
-    public String upvotePerk(
-            @PathVariable Long perkId,
-            @AuthenticationPrincipal User user,
-            Model model) {
-
-        //Perk perk = perkService.vote(perkId, true);
-        //model.addAttribute("perk", perk);
-
-
+    public String upvotePerk(@PathVariable Long perkId) {
+        perkService.vote(perkId, true);
         return "";
     }
+
+    @PostMapping("/{perkId}/downvote")
+    public String downvotePerk(@PathVariable Long perkId) {
+        perkService.vote(perkId, false);
+        return "";
+    }
+
+
 
 
 

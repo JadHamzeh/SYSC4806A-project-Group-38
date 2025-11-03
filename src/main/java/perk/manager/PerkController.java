@@ -18,23 +18,23 @@ public class PerkController {
 
     private MembershipTypeRepository membershipTypeRepository;
 
-    @GetMapping("/dashboard")
-    public String perksPage( @AuthenticationPrincipal User user, Model model) {
+//    @GetMapping("/dashboard")
+//    public String perksPage( @AuthenticationPrincipal User user, Model model) {
+//
+//        if (user != null) {
+//            // User logged in
+//            model.addAttribute("isLoggedIn", true);
+//            model.addAttribute("currentUser", user);
+//        } else {
+//            // User NOT logged in
+//            model.addAttribute("isLoggedIn", false);
+//        }
+//
+//        model.addAttribute("perks", perkService.getAllPerks());
+//        return "dashboard";
+//    }
 
-        if (user != null) {
-            // User logged in
-            model.addAttribute("isLoggedIn", true);
-            model.addAttribute("currentUser", user);
-        } else {
-            // User NOT logged in
-            model.addAttribute("isLoggedIn", false);
-        }
-
-        model.addAttribute("perks", perkService.getAllPerks());
-        return "dashboard";
-    }
-
-    @GetMapping("/dashboard/search")
+    @GetMapping("/search")
     public String perkSearch(
             @RequestParam String MembershipType,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
@@ -59,10 +59,10 @@ public class PerkController {
     @GetMapping("/new")
     public String newPerkForm(Model model) {
         model.addAttribute("memberships", membershipTypeRepository.findAll());
-        return "";
+        return "new-perk";
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String createPerk(
             @RequestParam String title,
             @RequestParam String description,
@@ -76,19 +76,19 @@ public class PerkController {
 
         model.addAttribute("perk", createdPerk);
 
-        return title;
+        return "redirect:/perks/dashboard";
     }
 
     @PostMapping("/{perkId}/upvote")
     public String upvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, true);
-        return "";
+        return "redirect:/perks/dashboard";
     }
 
     @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId) {
         perkService.vote(perkId, false);
-        return "";
+        return "redirect:/perks/dashboard";
     }
 
 

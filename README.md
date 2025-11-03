@@ -4,11 +4,11 @@ A web application for discovering, sharing, and managing membership perks across
 
 
 ## Contributors
-- Abduallah Aldabibi
-- Adam Beehler
-- Omar Hamzat
+- Abduallah Aldabibi 101239527
+- Adam Beehler 101220459
+- Omar Hamzat 101244220 
 - Jad Hamzeh 101219884
-- Akshun Kalra
+- Akshun Kalra 101189457
 
 ## Tech Stack
 - **Backend**: Spring Boot, Spring MVC, Spring Data JPA, Spring Security

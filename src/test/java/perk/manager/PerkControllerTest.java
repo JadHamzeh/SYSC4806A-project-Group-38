@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.mock.web.MockHttpSession;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 
@@ -243,10 +244,11 @@ class PerkControllerTest {
 
     @Test
     void testUpvotePerkFragment() {
+        MockHttpSession session = new MockHttpSession();
         when(perkRepository.findById(1L)).thenReturn(Optional.of(perk));
         doNothing().when(perkService).vote(1L, true);
 
-        String viewName = perkController.upvotePerkFragment(1L, model);
+        String viewName = perkController.upvotePerkFragment(1L, session, model);
 
         assertEquals("fragments/perk-list :: vote-section", viewName);
         verify(perkService).vote(1L, true);
@@ -255,10 +257,11 @@ class PerkControllerTest {
 
     @Test
     void testDownvotePerkFragment() {
+        MockHttpSession session = new MockHttpSession();
         when(perkRepository.findById(1L)).thenReturn(Optional.of(perk));
         doNothing().when(perkService).vote(1L, false);
 
-        String viewName = perkController.downvotePerkFragment(1L, model);
+        String viewName = perkController.downvotePerkFragment(1L, session, model);
 
         assertEquals("fragments/perk-list :: vote-section", viewName);
         verify(perkService).vote(1L, false);
@@ -267,9 +270,10 @@ class PerkControllerTest {
 
     @Test
     void testUpvotePerkFragment_PerkNotFound() {
+        MockHttpSession session = new MockHttpSession();
         when(perkRepository.findById(999L)).thenReturn(Optional.empty());
 
-        String viewName = perkController.upvotePerkFragment(999L, model);
+        String viewName = perkController.upvotePerkFragment(999L, session, model);
 
         assertEquals("fragments/perk-list :: vote-section", viewName);
         verify(model, never()).addAttribute(eq("perk"), any());
@@ -277,9 +281,10 @@ class PerkControllerTest {
 
     @Test
     void testUpvotePerk() {
+        MockHttpSession session = new MockHttpSession();
         doNothing().when(perkService).vote(1L, true);
 
-        String viewName = perkController.upvotePerk(1L);
+        String viewName = perkController.upvotePerk(1L, session);
 
         assertEquals("redirect:/perks/dashboard", viewName);
         verify(perkService).vote(1L, true);
@@ -287,9 +292,10 @@ class PerkControllerTest {
 
     @Test
     void testDownvotePerk() {
+        MockHttpSession session = new MockHttpSession();
         doNothing().when(perkService).vote(1L, false);
 
-        String viewName = perkController.downvotePerk(1L);
+        String viewName = perkController.downvotePerk(1L, session);
 
         assertEquals("redirect:/perks/dashboard", viewName);
         verify(perkService).vote(1L, false);

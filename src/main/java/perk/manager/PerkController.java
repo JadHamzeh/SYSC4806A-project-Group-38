@@ -272,7 +272,7 @@ public class PerkController {
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
             sesh.setAttribute("votedPerks", votedPerks);
-        } else if (lastVote == false) {
+        } else if (!lastVote) {
             perkService.vote(perkId, true);
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
@@ -372,7 +372,7 @@ public class PerkController {
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);
             sesh.setAttribute("votedPerks", votedPerks);
-        } else if (lastVote == true) {
+        } else if (lastVote) {
             perkService.vote(perkId, false);
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);

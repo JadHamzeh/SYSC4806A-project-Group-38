@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+/**
+ * Populate membership type data and create perks for viewing on the dashboard.
+ */
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -12,6 +15,12 @@ public class DataLoader implements CommandLineRunner {
     private final UserService userService;
     private final PerkService perkService;
 
+    /**
+     *
+     * @param membershipTypeRepository repo which holds all membershipType data.
+     * @param userService object to handle services such as user registration & password verification.
+     * @param perkService object to handle services such as perk creation & perk voting.
+     */
     public DataLoader(MembershipTypeRepository membershipTypeRepository,
                       UserService userService,
                       PerkService perkService) {
@@ -20,6 +29,13 @@ public class DataLoader implements CommandLineRunner {
         this.perkService = perkService;
     }
 
+    /**
+     * Populate membership database with 10 unique membership types.
+     * Create 4 perks to be viewed on the dashboard.
+     * Register a demo user to log in with for testing.
+     *
+     * @param args (default param)
+     */
     @Override
     public void run(String... args) {
         if (membershipTypeRepository.count() == 0) {
@@ -76,7 +92,7 @@ public class DataLoader implements CommandLineRunner {
                     LocalDate.now().plusMonths(6)
             );
 
-            // For debugging
+            // Console print for testing
             System.out.println("Created demo user (username: demo, password: demo123) with sample perks");
         }
     }

@@ -145,6 +145,7 @@ Run all tests with:
 [![Build and deploy JAR app to Azure Web App - SYSC4806Group38Assignment](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml/badge.svg)](https://github.com/JadHamzeh/SYSC4806A-project-Group-38/actions/workflows/master_sysc4806group38assignment.yml)
 
 ## Database Schema
+<img width="695" height="623" alt="image" src="https://github.com/user-attachments/assets/28ff73f4-c96e-4bf0-9b0a-5a674eec5ecd" />
 
 The application uses JPA/Hibernate to automatically generate the database schema from entity classes:
 

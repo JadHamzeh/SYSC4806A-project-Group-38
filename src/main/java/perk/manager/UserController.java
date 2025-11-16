@@ -6,6 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * The controller for handling page loading for the home, login, signup & profile page.
+ * Processes data when the user signs up on the signup page.
+ */
 @Controller
 public class UserController {
 
@@ -96,8 +100,7 @@ public class UserController {
      * the profile page will be displayed without user data.
      *
      *
-     * AuthenticationPrincipal the Spring Security principal representing the authenticated user,
-     *                  or null if no user is authenticated
+     * AuthenticationPrincipal the Spring Security principal representing the authenticated user, or null if no user is authenticated.
      * @param model the Spring MVC model for passing data to the view
      * @return the name of the view template "profile"
      */

@@ -44,6 +44,11 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping("/login-popup")
+    public String loginPopup() {
+        return "fragments/login-popup :: login-popup-form";
+    }
+
     /**
      * Displays the signup page.
      *

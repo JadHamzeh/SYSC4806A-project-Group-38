@@ -346,7 +346,7 @@
         if (event.detail.xhr.status === 401) {
             // Open modal and load login page
             document.getElementById('modal').classList.add('show');
-            htmx.ajax('GET', '/login', { target: '#modal-content' });
+            htmx.ajax('GET', '/login-popup', { target: '#modal-content' , swap: 'innerHTML' });
         }
     });
 </script>

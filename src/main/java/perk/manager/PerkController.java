@@ -1,5 +1,6 @@
 package perk.manager;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -7,9 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/perks")
@@ -260,8 +259,26 @@ public class PerkController {
      * @return the Thymeleaf fragment path for the vote section
      */
     @PostMapping("/{perkId}/upvote-fragment")
-    public String upvotePerkFragment(@PathVariable Long perkId, Model model) {
-        perkService.vote(perkId, true);
+    public String upvotePerkFragment(@PathVariable Long perkId, HttpSession sesh, Model model) {
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
+        if (votedPerks == null){
+            votedPerks = new HashMap<>();
+            sesh.setAttribute("votedPerks", votedPerks);
+        }
+
+        Boolean lastVote = votedPerks.get(perkId);
+
+        if (lastVote == null){
+            perkService.vote(perkId, true);
+            votedPerks.put(perkId, true);
+            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (!lastVote) {
+            perkService.vote(perkId, true);
+            perkService.vote(perkId, true);
+            votedPerks.put(perkId, true);
+        }
+
+
         Optional<Perk> perkOpt = perkRepository.findById(perkId);
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
@@ -279,8 +296,24 @@ public class PerkController {
      * @return the Thymeleaf fragment path for the vote section
      */
     @PostMapping("/{perkId}/downvote-fragment")
-    public String downvotePerkFragment(@PathVariable Long perkId, Model model) {
-        perkService.vote(perkId, false);
+    public String downvotePerkFragment(@PathVariable Long perkId,HttpSession sesh, Model model) {
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
+        if (votedPerks == null){
+            votedPerks = new HashMap<>();
+            sesh.setAttribute("votedPerks", votedPerks);
+        }
+
+        Boolean lastVote = votedPerks.get(perkId);
+
+        if (lastVote == null){
+            perkService.vote(perkId, false);
+            votedPerks.put(perkId, false);
+            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote == true) {
+            perkService.vote(perkId, false);
+            perkService.vote(perkId, false);
+            votedPerks.put(perkId, false);
+        }
         Optional<Perk> perkOpt = perkRepository.findById(perkId);
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
@@ -297,8 +330,24 @@ public class PerkController {
      * @return redirect to the dashboard page
      */
     @PostMapping("/{perkId}/upvote")
-    public String upvotePerk(@PathVariable Long perkId) {
-        perkService.vote(perkId, true);
+    public String upvotePerk(@PathVariable Long perkId, HttpSession sesh) {
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
+        if (votedPerks == null){
+            votedPerks = new HashMap<>();
+            sesh.setAttribute("votedPerks", votedPerks);
+        }
+
+        Boolean lastVote = votedPerks.get(perkId);
+
+        if (lastVote == null){
+            perkService.vote(perkId, true);
+            votedPerks.put(perkId, true);
+            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote == false) {
+            perkService.vote(perkId, true);
+            perkService.vote(perkId, true);
+            votedPerks.put(perkId, true);
+        }
         return "redirect:/perks/dashboard";
     }
 
@@ -310,8 +359,24 @@ public class PerkController {
      * @return redirect to the dashboard page
      */
     @PostMapping("/{perkId}/downvote")
-    public String downvotePerk(@PathVariable Long perkId) {
-        perkService.vote(perkId, false);
+    public String downvotePerk(@PathVariable Long perkId, HttpSession sesh) {
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
+        if (votedPerks == null){
+            votedPerks = new HashMap<>();
+            sesh.setAttribute("votedPerks", votedPerks);
+        }
+
+        Boolean lastVote = votedPerks.get(perkId);
+
+        if (lastVote == null){
+            perkService.vote(perkId, false);
+            votedPerks.put(perkId, false);
+            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote) {
+            perkService.vote(perkId, false);
+            perkService.vote(perkId, false);
+            votedPerks.put(perkId, false);
+        }
         return "redirect:/perks/dashboard";
     }
 }

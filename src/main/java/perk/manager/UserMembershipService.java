@@ -1,5 +1,6 @@
 package perk.manager;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +17,16 @@ import java.util.stream.Collectors;
 public class UserMembershipService {
 
     private final UserMembershipRepository userMembershipRepository;
+    private final UserRepository userRepository;
 
     /**
      * Assigns the repository to be used by the system.
      *
      * @param userMembershipRepository the repo used for accessing membership type data.
      */
-    public UserMembershipService(UserMembershipRepository userMembershipRepository) {
+    public UserMembershipService(UserMembershipRepository userMembershipRepository, UserRepository userRepository) {
         this.userMembershipRepository = userMembershipRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -33,6 +36,7 @@ public class UserMembershipService {
      * @param membership the membership type to assign to the user.
      * @return the persisted UserMembership entity representing the assignment.
      */
+    @Transactional
     public UserMembership assignMembership(User user, MembershipType membership){
         UserMembership userMembership = new UserMembership(user,membership);
         return userMembershipRepository.save(userMembership);
@@ -43,8 +47,22 @@ public class UserMembershipService {
      *
      * @param userMembership the UserMembership entity to delete.
      */
+    @Transactional
     public void removeMembership(UserMembership userMembership){
         userMembershipRepository.delete(userMembership);
+    }
+
+    @Transactional
+    public void removeMembershipByUserAndType(Long userId, Long membershipTypeId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null){
+           List <UserMembership> toRemove = userMembershipRepository.findAll().stream()
+                   .filter(um -> um.getUser().getId().equals(userId) &&
+                           um.getMembershipType().getId().equals(membershipTypeId))
+                   .collect(Collectors.toList());
+
+           userMembershipRepository.deleteAll(toRemove);
+        }
     }
 
     /**
@@ -54,6 +72,9 @@ public class UserMembershipService {
      * @return a list of MembershipType entities associated with the user.
      */
     public List<MembershipType> getMembershipsForUser(User user){
+        if (user == null){
+            return List.of();
+        }
         return user.getMemberships()
                 .stream()
                 .map(UserMembership::getMembershipType)

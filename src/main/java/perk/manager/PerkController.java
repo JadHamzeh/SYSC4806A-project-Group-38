@@ -31,7 +31,7 @@ public class PerkController {
      * Shows user authentication status and loads all available perks and membership types.
      *
      * @param principal the authenticated user principal, null if user is not logged in
-     * @param model the Spring MVC model to pass data to the view
+     * @param model     the Spring MVC model to pass data to the view
      * @return the name of the dashboard view template
      */
     @GetMapping("/dashboard")
@@ -55,9 +55,9 @@ public class PerkController {
      * Used for dynamic updates without full page reloads.
      *
      * @param membershipType optional filter by membership type name
-     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
-     * @param principal the authenticated user principal, null if user is not logged in
-     * @param model the Spring MVC model to pass data to the view
+     * @param sortBy         sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal      the authenticated user principal, null if user is not logged in
+     * @param model          the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the perk list
      */
     @GetMapping("/search-fragment")
@@ -101,9 +101,9 @@ public class PerkController {
      * Returns the complete dashboard with filtered and sorted results.
      *
      * @param membershipType optional filter by membership type name
-     * @param sortBy sorting criteria: "votes" (default), "expiry", or "relevance"
-     * @param principal the authenticated user principal, null if user is not logged in
-     * @param model the Spring MVC model to pass data to the view
+     * @param sortBy         sorting criteria: "votes" (default), "expiry", or "relevance"
+     * @param principal      the authenticated user principal, null if user is not logged in
+     * @param model          the Spring MVC model to pass data to the view
      * @return the name of the dashboard view template with filtered results
      */
     @GetMapping("/search")
@@ -148,7 +148,7 @@ public class PerkController {
      * Requires user authentication - redirects to login if not authenticated.
      *
      * @param principal the authenticated user principal
-     * @param model the Spring MVC model to pass data to the view
+     * @param model     the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the new perk form, or redirect to login
      */
     @GetMapping("/new")
@@ -166,13 +166,13 @@ public class PerkController {
      * Handles the creation of a new perk with full page navigation.
      * Validates user authentication and delegates to the service layer.
      *
-     * @param title the title of the perk
-     * @param description detailed description of the perk
-     * @param region the geographical region where the perk is valid
+     * @param title          the title of the perk
+     * @param description    detailed description of the perk
+     * @param region         the geographical region where the perk is valid
      * @param membershipType the membership type associated with this perk
-     * @param expiryDate the date when the perk expires
-     * @param principal the authenticated user principal
-     * @param model the Spring MVC model to pass data to the view
+     * @param expiryDate     the date when the perk expires
+     * @param principal      the authenticated user principal
+     * @param model          the Spring MVC model to pass data to the view
      * @return redirect to dashboard on success, or back to form with error
      */
     @PostMapping("/create")
@@ -208,13 +208,13 @@ public class PerkController {
      * Handles the creation of a new perk via HTMX fragment submission.
      * Returns appropriate fragment responses for success or error states.
      *
-     * @param title the title of the perk
-     * @param description detailed description of the perk
-     * @param region the geographical region where the perk is valid
+     * @param title          the title of the perk
+     * @param description    detailed description of the perk
+     * @param region         the geographical region where the perk is valid
      * @param membershipType the membership type associated with this perk
-     * @param expiryDate the date when the perk expires
-     * @param principal the authenticated user principal
-     * @param model the Spring MVC model to pass data to the view
+     * @param expiryDate     the date when the perk expires
+     * @param principal      the authenticated user principal
+     * @param model          the Spring MVC model to pass data to the view
      * @return success message fragment on success
      */
     @PostMapping("/create-fragment")
@@ -255,7 +255,7 @@ public class PerkController {
      * Returns the updated vote section fragment with new vote count.
      *
      * @param perkId the ID of the perk to upvote
-     * @param model the Spring MVC model to pass data to the view
+     * @param model  the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the vote section
      */
     @PostMapping("/{perkId}/upvote-fragment")
@@ -263,7 +263,6 @@ public class PerkController {
         HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
         if (votedPerks == null){
             votedPerks = new HashMap<>();
-            sesh.setAttribute("votedPerks", votedPerks);
         }
 
         Boolean lastVote = votedPerks.get(perkId);
@@ -271,18 +270,20 @@ public class PerkController {
         if (lastVote == null){
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
-            sesh.setAttribute("votedPerks", votedPerks);
-        } else if (!lastVote) {
+        } else if (lastVote == true) {
+            perkService.vote(perkId, false);
+            votedPerks.remove(perkId);
+        } else if (lastVote == false) {
             perkService.vote(perkId, true);
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
         }
 
+        sesh.setAttribute("votedPerks", votedPerks);
 
         Optional<Perk> perkOpt = perkRepository.findById(perkId);
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
-            return "fragments/perk-list :: vote-section";
         }
         return "fragments/perk-list :: vote-section";
     }
@@ -292,7 +293,7 @@ public class PerkController {
      * Returns the updated vote section fragment with new vote count.
      *
      * @param perkId the ID of the perk to downvote
-     * @param model the Spring MVC model to pass data to the view
+     * @param model  the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the vote section
      */
     @PostMapping("/{perkId}/downvote-fragment")
@@ -300,7 +301,6 @@ public class PerkController {
         HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
         if (votedPerks == null){
             votedPerks = new HashMap<>();
-            sesh.setAttribute("votedPerks", votedPerks);
         }
 
         Boolean lastVote = votedPerks.get(perkId);
@@ -308,19 +308,24 @@ public class PerkController {
         if (lastVote == null){
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);
-            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote == false) {
+            perkService.vote(perkId, true);
+            votedPerks.remove(perkId);
         } else if (lastVote == true) {
             perkService.vote(perkId, false);
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);
         }
+
+        sesh.setAttribute("votedPerks", votedPerks);
+
         Optional<Perk> perkOpt = perkRepository.findById(perkId);
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
-            return "fragments/perk-list :: vote-section";
         }
         return "fragments/perk-list :: vote-section";
     }
+
 
     /**
      * Handles upvoting a perk with full page navigation.
@@ -334,7 +339,6 @@ public class PerkController {
         HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
         if (votedPerks == null){
             votedPerks = new HashMap<>();
-            sesh.setAttribute("votedPerks", votedPerks);
         }
 
         Boolean lastVote = votedPerks.get(perkId);
@@ -342,12 +346,18 @@ public class PerkController {
         if (lastVote == null){
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
-            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote == true) {
+
+            perkService.vote(perkId, false);
+            votedPerks.remove(perkId);
         } else if (lastVote == false) {
+
             perkService.vote(perkId, true);
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
         }
+
+        sesh.setAttribute("votedPerks", votedPerks);
         return "redirect:/perks/dashboard";
     }
 
@@ -361,22 +371,25 @@ public class PerkController {
     @PostMapping("/{perkId}/downvote")
     public String downvotePerk(@PathVariable Long perkId, HttpSession sesh) {
         HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
-        if (votedPerks == null){
+        if (votedPerks == null) {
             votedPerks = new HashMap<>();
-            sesh.setAttribute("votedPerks", votedPerks);
         }
 
         Boolean lastVote = votedPerks.get(perkId);
 
-        if (lastVote == null){
+        if (lastVote == null) {
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);
-            sesh.setAttribute("votedPerks", votedPerks);
+        } else if (lastVote == false) {
+            perkService.vote(perkId, true);
+            votedPerks.remove(perkId);
         } else if (lastVote) {
             perkService.vote(perkId, false);
             perkService.vote(perkId, false);
             votedPerks.put(perkId, false);
         }
+
+        sesh.setAttribute("votedPerks", votedPerks);
         return "redirect:/perks/dashboard";
     }
 }

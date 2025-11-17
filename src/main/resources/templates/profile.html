@@ -6,15 +6,21 @@
     <title>User Profile</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5; /* Matched provided stylesheet */
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px; /* Matched provided stylesheet */
             margin: 0 auto;
         }
 
@@ -31,6 +37,7 @@
 
         .header h1 {
             color: #667eea;
+            font-size: 28px;
         }
 
         .profile-card {
@@ -52,10 +59,17 @@
             padding: 15px;
             background: #f8f9fa;
             border-radius: 8px;
+            /* Using .perk-card hover effect for .info-item hover for general interaction feel */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .info-item label {
-            font-weight: 600;
+            font-weight: 500; /* Matched form-group label font weight */
             color: #666;
             display: block;
             margin-bottom: 5px;
@@ -71,6 +85,7 @@
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
+            font-size: 24px;
         }
 
         .perks-list {
@@ -79,18 +94,20 @@
         }
 
         .perk-item {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            /* Using perk-card styles for individual perk items */
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .perk-item:hover {
-            transform: translateX(5px);
-            background: #e9ecef;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         .perk-item .title {
@@ -103,6 +120,7 @@
             font-weight: bold;
         }
 
+        /* Unified Button Styles */
         .btn {
             padding: 10px 20px;
             border: none;
@@ -126,6 +144,15 @@
         .btn-danger {
             background: #dc3545;
             color: white;
+            /* Also add the btn styles */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
 
         .btn-danger:hover {
@@ -135,10 +162,14 @@
         .empty-state {
             text-align: center;
             padding: 40px;
-            color: #999;
+            color: #666; /* Matched .no-perks color */
+            background: white; /* Matched .no-perks background */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .delete-btn {
+            /* Delete button style needs to be explicitly defined or use a btn-* class */
             background: transparent;
             border: none;
             color: #dc3545;
@@ -151,19 +182,47 @@
         .delete-btn:hover {
             background: #f8d7da;
         }
+
+        /* Modal styles from provided sheet */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modal.show {
+            display: flex;
+        }
+
+        .modal-content-wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>👤 My Profile</h1>
+        <h1>My Profile</h1>
         <a href="/perks/dashboard" class="btn btn-primary">← Back to Dashboard</a>
     </div>
 
     <div class="profile-card" th:if="${user != null}">
         <h2 class="section-title">Profile Information</h2>
-        
+
         <div class="profile-info">
             <div class="info-item">
                 <label>Username</label>
@@ -179,11 +238,13 @@
             </div>
         </div>
 
+        <div th:replace="~{fragments/membership-list :: membership-section}"></div>
+
         <h2 class="section-title">My Perks</h2>
-        
+
         <div id="perks-list" class="perks-list" th:if="${user.perks != null and !user.perks.isEmpty()}">
-            <div class="perk-item" 
-                 th:each="perk : ${user.perks}" 
+            <div class="perk-item"
+                 th:each="perk : ${user.perks}"
                  th:id="'my-perk-' + ${perk.id}">
                 <div>
                     <div class="title" th:text="${perk.title}">Perk Title</div>
@@ -206,11 +267,11 @@
 
         <div class="empty-state" th:if="${user.perks == null or user.perks.isEmpty()}">
             <p>You haven't created any perks yet.</p>
-            <button hx-get="/perks/new" 
-                    hx-target="#modal-content" 
+            <button hx-get="/perks/new"
+                    hx-target="#modal-content"
                     hx-swap="innerHTML"
                     onclick="showModal()"
-                    class="btn btn-primary" 
+                    class="btn btn-primary"
                     style="margin-top: 15px;">Create Your First Perk</button>
         </div>
     </div>
@@ -223,11 +284,9 @@
     </div>
 </div>
 
-<!-- Modal for creating perks (same as dashboard) -->
-<div id="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+<div id="modal">
+    <div class="modal-content">
         <div id="modal-content">
-            <!-- Content loaded via HTMX -->
         </div>
     </div>
 </div>
@@ -235,18 +294,19 @@
 <script>
     function showModal() {
         document.getElementById('modal').style.display = 'flex';
+        document.getElementById('modal').classList.add('show');
     }
 
     // Close modal when clicking outside
     document.getElementById('modal').addEventListener('click', function(e) {
         if (e.target === this) {
-            this.style.display = 'none';
+            this.classList.remove('show');
         }
     });
 
     // Handle successful perk creation
     document.body.addEventListener('perkCreated', function() {
-        document.getElementById('modal').style.display = 'none';
+        document.getElementById('modal').classList.remove('show');
         window.location.reload(); // Reload to show new perk
     });
 </script>

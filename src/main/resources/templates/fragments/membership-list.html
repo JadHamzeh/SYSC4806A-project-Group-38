@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="membership-section">
+    <div class="membership-section" id="membership-section">
+        <h2 class="section-title">My Memberships</h2>
+
+        <!-- Add Membership Form -->
+        <div class="add-membership-form">
+            <form hx-post="/profile/add-membership"
+                  hx-target="#membership-section"
+                  hx-swap="outerHTML">
+                <div style="display: flex; gap: 15px; align-items: end;">
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+                            Add a Membership
+                        </label>
+                        <select name="membershipTypeId"
+                                required
+                                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                            <option value="">Select a membership...</option>
+                            <option th:each="membership : ${allMemberships}"
+                                    th:value="${membership.id}"
+                                    th:text="${membership.name}"
+                                    th:disabled="${userMemberships.contains(membership)}">
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                            style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Current Memberships List -->
+        <div class="memberships-list" style="margin-top: 20px;">
+            <div th:if="${userMemberships != null and !userMemberships.isEmpty()}"
+                 style="display: grid; gap: 10px;">
+                <div th:each="membership : ${userMemberships}"
+                     class="membership-item"
+                     style="padding: 15px; background: #f8f9fa; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: 600; color: #333;" th:text="${membership.name}">Membership</span>
+                    </div>
+                    <form hx-post="/profile/remove-membership"
+                          hx-target="#membership-section"
+                          hx-swap="outerHTML"
+                          hx-confirm="Are you sure you want to remove this membership?"
+                          style="display: inline;">
+                        <input type="hidden" name="membershipTypeId" th:value="${membership.id}" />
+                        <button type="submit"
+                                class="delete-btn"
+                                style="background: transparent; border: none; color: #dc3545; cursor: pointer; padding: 5px 10px; border-radius: 5px;">
+                            Remove
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div th:if="${userMemberships == null or userMemberships.isEmpty()}"
+                 class="empty-state"
+                 style="text-align: center; padding: 30px; color: #999;">
+                <p>You haven't added any memberships yet.</p>
+                <p style="font-size: 14px;">Add memberships above to start tracking your perks!</p>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

@@ -81,7 +81,8 @@ public class UserController {
     public String register(@RequestParam String username,
                            @RequestParam String password,
                            @RequestParam(required = false) String email,
-                           Model model) {
+                           Model model,
+                           jakarta.servlet.http.HttpServletRequest request) {
         try {
             // Check if user already exists
             if (userService.findByUsername(username).isPresent()) {
@@ -90,7 +91,9 @@ public class UserController {
             }
 
             userService.registerUser(username, password);
-            return "redirect:/login?registered";
+            request.login(username, password);
+
+            return "redirect:/perks/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed");
             return "signup";

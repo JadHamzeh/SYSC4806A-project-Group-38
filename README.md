@@ -204,3 +204,9 @@ The application uses JPA/Hibernate to automatically generate the database schema
 
 ## 5. Perk Controller
 ![alt_text](diagrams/PerkController_%20UML%20diagram.jpg)
+
+## 6. MembershipType
+![MembershipType.jpg](diagrams/MembershipType.jpg)
+
+## 7. UserMembership
+![UserMembership.jpg](diagrams/UserMembership.jpg)

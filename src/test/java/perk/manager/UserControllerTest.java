@@ -1,5 +1,6 @@
 package perk.manager;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -82,21 +83,26 @@ class UserControllerTest {
     }
 
     @Test
-    void testRegister_Success() {
+    void testRegister_Success() throws Exception{
+        jakarta.servlet.http.HttpServletRequest request = mock(HttpServletRequest.class);
+
         when(userService.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userService.registerUser("newuser", "password")).thenReturn(user);
+        doNothing().when(request).login("newuser", "password");
 
-        String viewName = userController.register("newuser", "password", "email@test.com", model);
+        String viewName = userController.register("newuser", "password", "email@test.com", model, request);
 
-        assertEquals("redirect:/login?registered", viewName);
+        assertEquals("redirect:/perks/dashboard", viewName);
         verify(userService).registerUser("newuser", "password");
+        verify(request).login("newuser", "password");
     }
 
     @Test
     void testRegister_UsernameExists() {
+        jakarta.servlet.http.HttpServletRequest request = mock(HttpServletRequest.class);
         when(userService.findByUsername("existinguser")).thenReturn(Optional.of(user));
 
-        String viewName = userController.register("existinguser", "password", "email@test.com", model);
+        String viewName = userController.register("existinguser", "password", "email@test.com", model, request);
 
         assertEquals("signup", viewName);
         verify(model).addAttribute("error", "Username already exists");
@@ -105,10 +111,11 @@ class UserControllerTest {
 
     @Test
     void testRegister_Exception() {
+        jakarta.servlet.http.HttpServletRequest request = mock(HttpServletRequest.class);
         when(userService.findByUsername("newuser")).thenReturn(Optional.empty());
         when(userService.registerUser("newuser", "password")).thenThrow(new RuntimeException("Database error"));
 
-        String viewName = userController.register("newuser", "password", "email@test.com", model);
+        String viewName = userController.register("newuser", "password", "email@test.com", model, request);
 
         assertEquals("signup", viewName);
         verify(model).addAttribute("error", "Registration failed");

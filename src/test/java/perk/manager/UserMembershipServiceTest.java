@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,6 +17,9 @@ class UserMembershipServiceTest {
 
     @Mock
     private UserMembershipRepository userMembershipRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserMembershipService userMembershipService;
@@ -81,5 +85,59 @@ class UserMembershipServiceTest {
         assertEquals(2, memberships.size());
         assertTrue(memberships.contains(membership));
         assertTrue(memberships.contains(membership2));
+    }
+
+    @Test
+    void testRemoveMembershipByUserAndType_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userMembershipRepository.findAll()).thenReturn(List.of(userMembership));
+
+        userMembershipService.removeMembershipByUserAndType(1L, 1L);
+
+        ArgumentCaptor<List<UserMembership>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userMembershipRepository).deleteAll(captor.capture());
+        List<UserMembership> deleted = captor.getValue();
+        assertEquals(1, deleted.size());
+        assertEquals(userMembership, deleted.get(0));
+    }
+
+    @Test
+    void testRemoveMembershipByUserAndType_UserNotFound() {
+        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+
+        userMembershipService.removeMembershipByUserAndType(999L, 1L);
+
+        verify(userMembershipRepository, never()).deleteAll(any());
+    }
+
+    @Test
+    void testRemoveMembershipByUserAndType_NoMatchingMembership() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userMembershipRepository.findAll()).thenReturn(List.of(userMembership));
+
+        // Try to remove a different membership type
+        userMembershipService.removeMembershipByUserAndType(1L, 999L);
+
+        ArgumentCaptor<List<UserMembership>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userMembershipRepository).deleteAll(captor.capture());
+        List<UserMembership> deleted = captor.getValue();
+        assertEquals(0, deleted.size()); // Should delete empty list
+    }
+
+    @Test
+    void testGetMembershipsForUser_NullUser() {
+        List<MembershipType> memberships = userMembershipService.getMembershipsForUser(null);
+
+        assertEquals(0, memberships.size());
+        verify(userMembershipRepository, never()).findAll();
+    }
+
+    @Test
+    void testGetMembershipsForUser_NoMemberships() {
+        when(userMembershipRepository.findAll()).thenReturn(List.of());
+
+        List<MembershipType> memberships = userMembershipService.getMembershipsForUser(user);
+
+        assertEquals(0, memberships.size());
     }
 }

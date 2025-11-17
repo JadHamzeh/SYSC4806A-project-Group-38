@@ -52,6 +52,12 @@
             border: 1px solid #f5c6cb;
         }
 
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
         /* Form Group Styles from provided stylesheet */
         .form-group {
             margin-bottom: 1.2rem;
@@ -82,6 +88,27 @@
 
         .form-group input.error {
             border-color: #dc3545;
+        }
+
+        /* Unified Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
         }
 
         .signup-button {
@@ -149,6 +176,10 @@
             display: none;
         }
 
+        .htmx-indicator {
+            display: inline-block;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>

@@ -157,7 +157,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>👤 My Profile</h1>
+        <h1>My Profile</h1>
         <a href="/perks/dashboard" class="btn btn-primary">← Back to Dashboard</a>
     </div>
 
@@ -178,6 +178,8 @@
                 <div class="value" th:text="${user.perks.size()}">0</div>
             </div>
         </div>
+
+        <div th:replace="~{fragments/membership-list :: membership-section}"></div>
 
         <h2 class="section-title">My Perks</h2>
         

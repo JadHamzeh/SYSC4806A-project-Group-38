@@ -7,11 +7,17 @@
     <style>
         /* Basic styling for the page */
         body {
+<<<<<<< Updated upstream
             font-family: Arial, sans-serif;
+=======
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5; /* Matched provided stylesheet */
+>>>>>>> Stashed changes
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+<<<<<<< Updated upstream
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
@@ -42,7 +48,108 @@
 
         .primary-button:hover {
             background-color: #0056b3;
+=======
+            min-height: 100vh;
+            padding: 20px;
+            color: #333; /* Default body color for better contrast on light background */
         }
+
+        .intro-section {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .intro-title {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #667eea; /* Used primary color */
+        }
+
+        .intro-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background-color: #ffffff;
+            color: #333333;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .feature-title {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444444;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Unified Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+>>>>>>> Stashed changes
+        }
+
+        /* Applying btn styles to navigation buttons */
+        .nav-btn {
+            /* Inherit base .btn styles */
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 35px; /* Larger padding for emphasis */
+        }
+
     </style>
 </head>
 <body>
@@ -57,6 +164,13 @@
 
     <a href="dashboard.html" class="nav-button primary-button">Continue as Guest</a>
 
+<<<<<<< Updated upstream
+=======
+<div class="navigation-buttons">
+    <a href="/login" class="nav-btn btn-primary">Login</a>
+    <a href="/signup" class="nav-btn btn-primary">Sign Up</a>
+    <a href="/perks/dashboard" class="nav-btn btn-primary">Browse as Guest</a>
+>>>>>>> Stashed changes
 </div>
 
 </body>

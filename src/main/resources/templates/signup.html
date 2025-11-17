@@ -5,13 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
     <style>
+<<<<<<< Updated upstream
         /* Shared styles */
         body {
             font-family: Arial, sans-serif;
+=======
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5; /* Matched provided stylesheet */
+>>>>>>> Stashed changes
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+<<<<<<< Updated upstream
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
@@ -24,6 +37,19 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 320px; /* Slightly wider for better spacing */
+=======
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container style adapted for centered form */
+        .signup-container {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 10px; /* Matched dashboard radius */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Matched dashboard shadow */
+            width: 350px;
+>>>>>>> Stashed changes
             text-align: center;
         }
 
@@ -31,7 +57,11 @@
             margin-bottom: 1.5rem;
         }
 
+<<<<<<< Updated upstream
         /* Styles for form groups (label + input) */
+=======
+        /* Form Group Styles from provided stylesheet */
+>>>>>>> Stashed changes
         .form-group {
             margin-bottom: 1rem;
             text-align: left;
@@ -40,17 +70,28 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
+<<<<<<< Updated upstream
             font-weight: bold;
+=======
+            color: #333;
+            font-weight: 500;
+>>>>>>> Stashed changes
         }
 
         .form-group input {
             width: 100%;
             padding: 10px;
+<<<<<<< Updated upstream
             border: 1px solid #ccc;
             border-radius: 4px;
+=======
+            border: 1px solid #ddd;
+            border-radius: 5px;
+>>>>>>> Stashed changes
             box-sizing: border-box;
         }
 
+<<<<<<< Updated upstream
         /* Style for the sign-up button */
         .signup-button {
             width: 100%;
@@ -67,6 +108,52 @@
 
         .signup-button:hover {
             background-color: #218838;
+=======
+        /* Unified Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 10px; /* Use smaller btn padding */
+            font-size: 16px;
+            font-weight: bold;
+            /* Applying btn-primary styles */
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signup-button:hover {
+            background: #5568d3;
+            transform: none;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .signup-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+>>>>>>> Stashed changes
         }
 
         /* Style for the "Login" link inside the container */
@@ -89,11 +176,38 @@
         .back-link {
             margin-top: 1rem;
             text-decoration: none;
+<<<<<<< Updated upstream
             color: #007bff;
         }
 
         .back-link:hover {
             text-decoration: underline;
+=======
+            color: #667eea; /* Changed color to match primary theme */
+            font-weight: 500;
+            display: inline-block;
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #e9ecef;
+        }
+
+        .validation-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .htmx-indicator {
+            display: inline-block;
+            margin-left: 10px;
+>>>>>>> Stashed changes
         }
     </style>
 </head>
@@ -102,11 +216,39 @@
 <div class="signup-container">
     <h1>Create Account</h1>
 
+<<<<<<< Updated upstream
     <form action="#" method="POST">
 
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
+=======
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">
+        Error message
+    </div>
+
+    <form action="/register"
+          method="POST"
+          hx-post="/register"
+          hx-target="#signup-messages"
+          hx-swap="innerHTML"
+          id="signup-form">
+
+        <div id="signup-messages"></div>
+
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text"
+                   id="username"
+                   name="username"
+                   required
+                   autofocus
+                   minlength="3"
+                   hx-post="/validate-username"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#username-validation">
+            <div id="username-validation" class="validation-message"></div>
+>>>>>>> Stashed changes
         </div>
 
         <div class="form-group">
@@ -116,7 +258,19 @@
 
         <div class="form-group">
             <label for="password">Password:</label>
+<<<<<<< Updated upstream
             <input type="password" id="password" name="password" required>
+=======
+            <input type="password"
+                   id="password"
+                   name="password"
+                   required
+                   minlength="6"
+                   oninput="validatePassword()">
+            <div id="password-validation" class="validation-message">
+                Password must be at least 6 characters
+            </div>
+>>>>>>> Stashed changes
         </div>
 
         <div class="form-group">
@@ -133,7 +287,26 @@
 
 </div>
 
+<<<<<<< Updated upstream
 <a href="index.html" class="back-link">Back to Home</a>
+=======
+<a href="/" class="back-link">← Back to Home</a>
+
+<script>
+    function validatePassword() {
+        const password = document.getElementById('password');
+        const validation = document.getElementById('password-validation');
+
+        if (password.value.length < 6 && password.value.length > 0) {
+            validation.style.display = 'block';
+            password.classList.add('error');
+        } else {
+            validation.style.display = 'none';
+            password.classList.remove('error');
+        }
+    }
+</script>
+>>>>>>> Stashed changes
 
 </body>
 </html>

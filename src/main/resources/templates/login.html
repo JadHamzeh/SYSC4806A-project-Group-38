@@ -5,13 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <style>
+<<<<<<< Updated upstream
         /* Shared styles from the home page */
         body {
             font-family: Arial, sans-serif;
+=======
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5; /* Matched provided stylesheet */
+>>>>>>> Stashed changes
             display: flex;
             flex-direction: column; /* Allows stacking the link below the form */
             justify-content: center;
             align-items: center;
+<<<<<<< Updated upstream
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
@@ -24,6 +37,19 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 300px;
+=======
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container style adapted for centered form */
+        .login-container {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 10px; /* Matched dashboard radius */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Matched dashboard shadow */
+            width: 350px;
+>>>>>>> Stashed changes
             text-align: center;
         }
 
@@ -31,7 +57,11 @@
             margin-bottom: 1.5rem;
         }
 
+<<<<<<< Updated upstream
         /* Styles for form groups (label + input) */
+=======
+        /* Form Group Styles from provided stylesheet */
+>>>>>>> Stashed changes
         .form-group {
             margin-bottom: 1rem;
             text-align: left; /* Aligns labels to the left */
@@ -40,6 +70,7 @@
         .form-group label {
             display: block; /* Makes the label appear on its own line */
             margin-bottom: 5px;
+<<<<<<< Updated upstream
             font-weight: bold;
         }
 
@@ -67,6 +98,71 @@
 
         .login-button:hover {
             background-color: #0056b3;
+=======
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Unified Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 10px; /* Use smaller btn padding */
+            font-size: 16px;
+            font-weight: bold;
+            /* Applying btn-primary styles */
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: #5568d3;
+            transform: none;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+>>>>>>> Stashed changes
         }
 
         /* --- NEW STYLE ADDED --- */
@@ -91,11 +187,31 @@
         .back-link {
             margin-top: 1rem;
             text-decoration: none;
+<<<<<<< Updated upstream
             color: #007bff;
         }
 
         .back-link:hover {
             text-decoration: underline;
+=======
+            color: #667eea; /* Changed color to match primary theme */
+            font-weight: 500;
+            display: inline-block;
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #e9ecef;
+        }
+
+        .htmx-indicator {
+            display: inline-block;
+            margin-left: 10px;
+>>>>>>> Stashed changes
         }
     </style>
 </head>

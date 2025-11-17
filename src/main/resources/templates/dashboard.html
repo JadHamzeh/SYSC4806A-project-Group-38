@@ -5,6 +5,92 @@
     <title>Title</title>
 </head>
 <body>
+<<<<<<< Updated upstream
 <p>loloolololololol</p>
+=======
+<div class="container">
+    <div class="header">
+        <h1>Perk Manager</h1>
+        <div class="user-info">
+            <span th:if="${isLoggedIn}" th:text="'Welcome, ' + ${currentUser.username} + '!'">Welcome, User!</span>
+            <a th:if="${isLoggedIn}" href="/profile" class="btn btn-primary">Profile</a>
+            <button th:if="${isLoggedIn}"
+                    hx-get="/perks/new"
+                    hx-target="#modal-content"
+                    hx-swap="innerHTML"
+                    onclick="document.getElementById('modal').classList.add('show')"
+                    class="btn btn-primary">+ Create Perk</button>
+            <a th:if="${isLoggedIn}" href="/logout" class="btn btn-secondary">Logout</a>
+            <a th:unless="${isLoggedIn}" href="/login" class="btn btn-primary">Login</a>
+            <a th:unless="${isLoggedIn}" href="/signup" class="btn btn-primary">Sign Up</a>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <div class="search-form">
+            <div class="form-group">
+                <label for="membershipType">Filter by Membership:</label>
+                <select name="membershipType"
+                        id="membershipType"
+                        hx-get="/perks/search-fragment"
+                        hx-trigger="change"
+                        hx-target="#perks-container"
+                        hx-include="[name='sortBy']">
+                    <option value="">All Memberships</option>
+                    <option th:each="membership : ${memberships}"
+                            th:value="${membership.name}"
+                            th:text="${membership.name}"
+                            th:selected="${membership.name == selectedMembership}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sortBy">Sort by:</label>
+                <select name="sortBy"
+                        id="sortBy"
+                        hx-get="/perks/search-fragment"
+                        hx-trigger="change"
+                        hx-target="#perks-container"
+                        hx-include="[name='membershipType']">
+                    <option value="votes" th:selected="${sortBy == 'votes'}">Most Votes</option>
+                    <option value="expiry" th:selected="${sortBy == 'expiry'}">Expiry Date</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="perks-container">
+        <div th:replace="~{fragments/perk-list :: perk-list}"></div>
+    </div>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <div id="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+        }
+    });
+
+    document.body.addEventListener('perkCreated', function() {
+        document.getElementById('modal').classList.remove('show');
+        htmx.ajax('GET', '/perks/search-fragment', {target: '#perks-container'});
+    });
+
+    document.body.addEventListener('htmx:responseError', function (event) {
+        if (event.detail.xhr.status === 401) {
+            // Open modal and load login page
+            document.getElementById('modal').classList.add('show');
+            htmx.ajax('GET', '/login', { target: '#modal-content' });
+        }
+    });
+</script>
+>>>>>>> Stashed changes
 </body>
 </html>

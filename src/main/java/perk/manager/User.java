@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
-    private String password; //hash it later
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserMembership> memberships = new ArrayList<>();
@@ -28,6 +29,10 @@ public class User {
 
     //getters setters
     public Long getId() { return id; }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }

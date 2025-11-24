@@ -16,9 +16,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(String username, String rawPassword){
-        String hashedPassword = passwordEncoder.encode(rawPassword);
-        User user = new User(username, hashedPassword);
+    public User registerUser(String username, String rawPassword) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(rawPassword));
         return userRepository.save(user);
     }
 

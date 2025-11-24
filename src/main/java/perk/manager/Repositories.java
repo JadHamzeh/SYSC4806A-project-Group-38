@@ -1,8 +1,11 @@
 package perk.manager;
 
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * Repositories to hold data for user, membershipType, userMembership, and Perk.
+ */
 
 interface UserRepository extends JpaRepository<User, Long> {}
 

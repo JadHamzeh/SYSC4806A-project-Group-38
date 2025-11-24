@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login - Perk Manager</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
-<<<<<<< Updated upstream
-        /* Shared styles from the home page */
-        body {
-            font-family: Arial, sans-serif;
-=======
         * {
             margin: 0;
             padding: 0;
@@ -19,25 +15,10 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5; /* Matched provided stylesheet */
->>>>>>> Stashed changes
             display: flex;
-            flex-direction: column; /* Allows stacking the link below the form */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-<<<<<<< Updated upstream
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Container for the login form */
-        .login-container {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-=======
             min-height: 100vh;
             padding: 20px;
         }
@@ -49,56 +30,43 @@
             border-radius: 10px; /* Matched dashboard radius */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Matched dashboard shadow */
             width: 350px;
->>>>>>> Stashed changes
             text-align: center;
         }
 
         .login-container h1 {
             margin-bottom: 1.5rem;
+            color: #667eea;
+            font-size: 28px;
         }
 
-<<<<<<< Updated upstream
-        /* Styles for form groups (label + input) */
-=======
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
         /* Form Group Styles from provided stylesheet */
->>>>>>> Stashed changes
         .form-group {
-            margin-bottom: 1rem;
-            text-align: left; /* Aligns labels to the left */
+            margin-bottom: 1.2rem;
+            text-align: left;
         }
 
         .form-group label {
-            display: block; /* Makes the label appear on its own line */
+            display: block;
             margin-bottom: 5px;
-<<<<<<< Updated upstream
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%; /* Makes input fill the container */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
-        }
-
-        /* Style for the login button */
-        .login-button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .login-button:hover {
-            background-color: #0056b3;
-=======
             color: #333;
             font-weight: 500;
         }
@@ -162,38 +130,27 @@
         .login-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
->>>>>>> Stashed changes
         }
 
-        /* --- NEW STYLE ADDED --- */
-        /* Style for the "Sign Up" link inside the container */
         .signup-link {
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             font-size: 14px;
             color: #555;
         }
 
         .signup-link a {
-            color: #007bff;
+            color: #667eea;
             text-decoration: none;
+            font-weight: 600;
         }
 
         .signup-link a:hover {
             text-decoration: underline;
         }
-        /* --- END OF NEW STYLE --- */
 
-        /* Style for the "Back to Home" link */
         .back-link {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             text-decoration: none;
-<<<<<<< Updated upstream
-            color: #007bff;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-=======
             color: #667eea; /* Changed color to match primary theme */
             font-weight: 500;
             display: inline-block;
@@ -211,7 +168,6 @@
         .htmx-indicator {
             display: inline-block;
             margin-left: 10px;
->>>>>>> Stashed changes
         }
     </style>
 </head>
@@ -220,11 +176,22 @@
 <div class="login-container">
     <h1>Login</h1>
 
-    <form action="#" method="POST">
+    <div th:if="${param.registered}" class="alert alert-success">
+        Registration successful! Please log in.
+    </div>
 
+    <div th:if="${param.error}" class="alert alert-error">
+        Invalid username or password.
+    </div>
+
+    <div th:if="${param.logout}" class="alert alert-success">
+        You have been logged out successfully.
+    </div>
+
+    <form action="/login" method="POST">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required autofocus>
         </div>
 
         <div class="form-group">
@@ -232,15 +199,18 @@
             <input type="password" id="password" name="password" required>
         </div>
 
-        <button type="submit" class="login-button">Login</button>
+        <button type="submit" class="login-button">
+            Login
+            <span class="htmx-indicator">⏳</span>
+        </button>
     </form>
 
     <p class="signup-link">
-        Don't have an account? <a href="signup.html">Sign Up</a>
+        Don't have an account? <a href="/signup">Sign Up</a>
     </p>
 </div>
 
-<a href="index.html" class="back-link">Back to Home</a>
+<a href="/" class="back-link">← Back to Home</a>
 
 </body>
 </html>

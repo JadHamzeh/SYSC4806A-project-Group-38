@@ -16,4 +16,5 @@ interface UserMembershipRepository extends JpaRepository<UserMembership, Long> {
 interface PerkRepository extends JpaRepository<Perk, Long> {
     List<Perk> findByMembershipType_NameIgnoreCase(String name);
     List<Perk> findAllByOrderByVotesDesc();
+    List<Perk> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description);
 }

@@ -1,0 +1,407 @@
+/* Dark background with animated color blurs - NO BANDING */
+body {
+    position: relative;
+    overflow-x: hidden;
+    background: #0a0a0a !important;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background:
+            linear-gradient(180deg,
+            #0a0a0a 0%,
+            #0d0d0d 25%,
+            #0a0a0a 50%,
+            #0f0f0f 75%,
+            #0a0a0a 100%);
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(100px);
+    opacity: 0.8;
+    background:
+            radial-gradient(ellipse at 20% 50%, rgba(102, 126, 234, 0.5) 0%, transparent 40%),
+            radial-gradient(ellipse at 80% 80%, rgba(118, 75, 162, 0.5) 0%, transparent 40%),
+            radial-gradient(ellipse at 40% 20%, rgba(255, 107, 107, 0.4) 0%, transparent 40%),
+            radial-gradient(ellipse at 90% 10%, rgba(78, 205, 196, 0.4) 0%, transparent 40%),
+            radial-gradient(ellipse at 10% 90%, rgba(255, 196, 0, 0.4) 0%, transparent 40%),
+            radial-gradient(ellipse at 60% 60%, rgba(147, 51, 234, 0.3) 0%, transparent 40%);
+    animation: colorBends 25s ease-in-out infinite;
+    mix-blend-mode: screen;
+}
+
+@keyframes colorBends {
+    0%, 100% {
+        transform: translate(0, 0) scale(1.2);
+        opacity: 0.7;
+    }
+    33% {
+        transform: translate(4%, -4%) scale(1.3);
+        opacity: 0.9;
+    }
+    66% {
+        transform: translate(-4%, 4%) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+/* Ensure content is above background */
+.container,
+.intro-section,
+.feature-grid,
+.navigation-buttons,
+.header,
+.search-section,
+.profile-card,
+.login-container,
+.signup-container,
+.perks-grid,
+.perk-card,
+.profile-info,
+.membership-section,
+.add-membership-form,
+.memberships-list {
+    position: relative;
+    z-index: 1;
+}
+
+/* Glassmorphism effect for all cards and containers */
+.feature-card,
+.perk-card,
+.profile-card,
+.login-container,
+.signup-container,
+.header,
+.search-section,
+.info-item,
+.membership-item,
+.perk-item,
+.membership-section,
+.add-membership-form {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.125) !important;
+    box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* IMPROVED MODAL STYLING */
+.modal-content,
+#modal-content > div {
+    background: rgba(10, 10, 10, 0.95) !important;
+    backdrop-filter: blur(30px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.5),
+            0 0 100px rgba(102, 126, 234, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    border-radius: 20px !important;
+}
+
+/* Modal header/title styling */
+#modal-content h1 {
+    background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 25px !important;
+}
+
+/* Close button in modal */
+#modal-content button[onclick*="modal"] {
+    background: rgba(220, 53, 69, 0.3) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(220, 53, 69, 0.5) !important;
+    transition: all 0.3s ease;
+}
+
+#modal-content button[onclick*="modal"]:hover {
+    background: rgba(220, 53, 69, 0.5) !important;
+    border: 1px solid rgba(220, 53, 69, 0.7) !important;
+    transform: scale(1.1);
+}
+
+.feature-card:hover,
+.perk-card:hover,
+.info-item:hover,
+.perk-item:hover,
+.membership-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow:
+            0 12px 48px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Update text colors for dark theme */
+body,
+.perk-title,
+.feature-title,
+.info-item label,
+.perk-item .title,
+h1, h2, h3, h4, h5, h6,
+.section-title,
+.perk-description,
+.feature-description,
+.user-info span,
+.login-link,
+.signup-link,
+label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.intro-title,
+.header h1,
+.login-container h1,
+.signup-container h1 {
+    color: #ffffff !important;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+}
+
+.intro-subtitle,
+.perk-info,
+.info-item .value,
+.perk-info span,
+small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Glassmorphic buttons */
+.btn-primary,
+.login-button,
+.signup-button {
+    background: rgba(102, 126, 234, 0.2) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: #ffffff !important;
+    border: 1px solid rgba(102, 126, 234, 0.4) !important;
+    box-shadow:
+            0 4px 16px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover,
+.login-button:hover,
+.signup-button:hover {
+    background: rgba(102, 126, 234, 0.4) !important;
+    border: 1px solid rgba(102, 126, 234, 0.6) !important;
+    box-shadow:
+            0 8px 24px rgba(102, 126, 234, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-secondary,
+.back-link {
+    background: rgba(108, 117, 125, 0.3) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.btn-secondary:hover,
+.back-link:hover {
+    background: rgba(108, 117, 125, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.btn-danger,
+.delete-btn {
+    background: rgba(220, 53, 69, 0.2) !important;
+    backdrop-filter: blur(10px);
+    color: #ff8a9b !important;
+    border: 1px solid rgba(220, 53, 69, 0.4) !important;
+}
+
+.btn-danger:hover,
+.delete-btn:hover {
+    background: rgba(220, 53, 69, 0.4) !important;
+    border: 1px solid rgba(220, 53, 69, 0.6) !important;
+}
+
+/* Form inputs glassmorphism */
+.form-group input,
+.form-group select,
+.form-group textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(102, 126, 234, 0.6) !important;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+    outline: none;
+}
+
+/* Placeholder text */
+.form-group input::placeholder,
+.form-group textarea::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Select dropdown options */
+option {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Membership badges */
+.perk-membership {
+    background: rgba(102, 126, 234, 0.3) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+    color: #ffffff !important;
+}
+
+/* Vote buttons */
+.vote-btn {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.vote-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.1);
+}
+
+.votes-count {
+    color: #a5b4fc !important;
+}
+
+/* Empty state styling */
+.no-perks,
+.empty-state {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Alert styling */
+.alert {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.alert-error,
+.validation-message {
+    background: rgba(220, 53, 69, 0.2) !important;
+    color: #ff8a9b !important;
+    border: 1px solid rgba(220, 53, 69, 0.4) !important;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.2) !important;
+    color: #8dffb3 !important;
+    border: 1px solid rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Modal overlay */
+#modal {
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px);
+}
+
+/* Links */
+a {
+    color: #a5b4fc;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #c4b5fd;
+}
+
+.login-link a,
+.signup-link a {
+    color: #a5b4fc !important;
+}
+
+.login-link a:hover,
+.signup-link a:hover {
+    color: #c4b5fd !important;
+}
+
+/* Perk footer styling */
+.perk-footer small {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Profile section headers */
+.perk-header {
+    border-bottom: 2px solid rgba(102, 126, 234, 0.5) !important;
+}
+
+/* Search section specific */
+.search-section {
+    margin-bottom: 30px;
+}
+
+/* Loading indicator */
+.loading {
+    color: #a5b4fc !important;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Smooth transitions */
+* {
+    transition: background 0.3s ease, border 0.3s ease;
+}
+
+button, .btn, a {
+    transition: all 0.3s ease !important;
+}

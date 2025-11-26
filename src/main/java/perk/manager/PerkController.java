@@ -63,17 +63,12 @@ public class PerkController {
     @GetMapping("/search-fragment")
     public String perkSearchFragment(
             @RequestParam(required = false) String membershipType,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             Model model) {
 
-        List<Perk> perks;
-
-        if (membershipType != null && !membershipType.isEmpty()) {
-            perks = perkService.searchByMembership(membershipType);
-        } else {
-            perks = perkService.getAllPerks();
-        }
+        List<Perk> perks = perkService.searchPerks(membershipType, keyword);
 
         if (sortBy.equalsIgnoreCase("votes")) {
             perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
@@ -92,6 +87,7 @@ public class PerkController {
         model.addAttribute("perks", perks);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("selectedMembership", membershipType);
+        model.addAttribute("keyword", keyword);
 
         return "fragments/perk-list :: perk-list";
     }
@@ -109,17 +105,12 @@ public class PerkController {
     @GetMapping("/search")
     public String perkSearch(
             @RequestParam(required = false) String membershipType,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             Model model) {
 
-        List<Perk> perks;
-
-        if (membershipType != null && !membershipType.isEmpty()) {
-            perks = perkService.searchByMembership(membershipType);
-        } else {
-            perks = perkService.getAllPerks();
-        }
+        List<Perk> perks = perkService.searchPerks(membershipType, keyword);
 
         if (sortBy.equalsIgnoreCase("votes")) {
             perks.sort(Comparator.comparingInt(Perk::getVotes).reversed());
@@ -139,6 +130,7 @@ public class PerkController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("memberships", membershipTypeRepository.findAll());
         model.addAttribute("selectedMembership", membershipType);
+        model.addAttribute("keyword", keyword);
 
         return "dashboard";
     }

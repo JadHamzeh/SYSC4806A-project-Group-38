@@ -286,7 +286,19 @@
     </div>
 
     <div class="search-section">
-        <div class="search-form">
+        <form class="search-form" id="search-form" onsubmit="return false;">
+            <div class="form-group">
+                <label for="keyword">Search:</label>
+                <input type="text"
+                       id="keyword"
+                       name="keyword"
+                       th:value="${keyword}"
+                       placeholder="Search titles or descriptions..."
+                       hx-get="/perks/search-fragment"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#perks-container"
+                       hx-include="#membershipType, #sortBy">
+            </div>
             <div class="form-group">
                 <label for="membershipType">Filter by Membership:</label>
                 <select name="membershipType"
@@ -294,7 +306,7 @@
                         hx-get="/perks/search-fragment"
                         hx-trigger="change"
                         hx-target="#perks-container"
-                        hx-include="[name='sortBy']">
+                        hx-include="#keyword, #sortBy">
                     <option value="">All Memberships</option>
                     <option th:each="membership : ${memberships}"
                             th:value="${membership.name}"
@@ -310,12 +322,12 @@
                         hx-get="/perks/search-fragment"
                         hx-trigger="change"
                         hx-target="#perks-container"
-                        hx-include="[name='membershipType']">
+                        hx-include="#keyword, #membershipType">
                     <option value="votes" th:selected="${sortBy == 'votes'}">Most Votes</option>
                     <option value="expiry" th:selected="${sortBy == 'expiry'}">Expiry Date</option>
                 </select>
             </div>
-        </div>
+        </form>
     </div>
 
     <div id="perks-container">

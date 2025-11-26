@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.mock.web.MockHttpSession;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
@@ -97,24 +97,27 @@ class PerkControllerTest {
 
     @Test
     void testPerkSearchFragment_AllPerks_SortByVotes() {
-        when(perkService.getAllPerks()).thenReturn(Arrays.asList(perk));
 
-        String viewName = perkController.perkSearchFragment(null, "votes", null, model);
+        when(perkService.searchPerks(null, null)).thenReturn(Arrays.asList(perk));
+
+
+        String viewName = perkController.perkSearchFragment(null, null, "votes", principal, model);
 
         assertEquals("fragments/perk-list :: perk-list", viewName);
-        verify(perkService).getAllPerks();
+        verify(perkService).searchPerks(null, null);
         verify(model).addAttribute(eq("perks"), any());
         verify(model).addAttribute("sortBy", "votes");
     }
 
     @Test
     void testPerkSearchFragment_FilterByMembership() {
-        when(perkService.searchByMembership("Aeroplan")).thenReturn(Arrays.asList(perk));
 
-        String viewName = perkController.perkSearchFragment("Aeroplan", "votes", null, model);
+        when(perkService.searchPerks("Aeroplan", null)).thenReturn(Arrays.asList(perk));
+
+        String viewName = perkController.perkSearchFragment("Aeroplan", null, "votes", principal, model);
 
         assertEquals("fragments/perk-list :: perk-list", viewName);
-        verify(perkService).searchByMembership("Aeroplan");
+        verify(perkService).searchPerks("Aeroplan", null);
         verify(model).addAttribute("selectedMembership", "Aeroplan");
     }
 
@@ -124,9 +127,11 @@ class PerkControllerTest {
                 LocalDate.now().plusDays(10), membershipType, user);
         perk2.setId(2L);
 
-        when(perkService.getAllPerks()).thenReturn(Arrays.asList(perk, perk2));
 
-        String viewName = perkController.perkSearchFragment(null, "expiry", null, model);
+        when(perkService.searchPerks(null, null)).thenReturn(Arrays.asList(perk, perk2));
+
+
+        String viewName = perkController.perkSearchFragment(null, null, "expiry", principal, model);
 
         assertEquals("fragments/perk-list :: perk-list", viewName);
         verify(model).addAttribute("sortBy", "expiry");
@@ -134,10 +139,12 @@ class PerkControllerTest {
 
     @Test
     void testPerkSearch_FullPage() {
-        when(perkService.getAllPerks()).thenReturn(Arrays.asList(perk));
+
+        when(perkService.searchPerks(null, null)).thenReturn(Arrays.asList(perk));
         when(membershipTypeRepository.findAll()).thenReturn(memberships);
 
-        String viewName = perkController.perkSearch(null, "votes", null, model);
+
+        String viewName = perkController.perkSearch(null, null, "votes", principal, model);
 
         assertEquals("dashboard", viewName);
         verify(model).addAttribute(eq("perks"), any());

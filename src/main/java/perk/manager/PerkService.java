@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PerkService {
@@ -26,6 +27,22 @@ public class PerkService {
 
     public List<Perk> searchByMembership(String membershipName){
         return perkRepository.findByMembershipType_NameIgnoreCase(membershipName);
+    }
+
+    public List<Perk> searchPerks(String membershipType, String keyword) {
+        if (membershipType != null && !membershipType.isEmpty() && keyword != null && !keyword.isEmpty()) {
+            List<Perk> byMembership = perkRepository.findByMembershipType_NameIgnoreCase(membershipType);
+            String k = keyword.toLowerCase();
+            return byMembership.stream()
+                    .filter(p -> p.getTitle().toLowerCase().contains(k) || p.getDescription().toLowerCase().contains(k))
+                    .collect(Collectors.toList());
+        } else if (membershipType != null && !membershipType.isEmpty()) {
+            return perkRepository.findByMembershipType_NameIgnoreCase(membershipType);
+        } else if (keyword != null && !keyword.isEmpty()) {
+            return perkRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
+        } else {
+            return perkRepository.findAll();
+        }
     }
 
     public Perk createPerk(String title, String description, String region, String membershipName, Long userId, LocalDate expiryDate){

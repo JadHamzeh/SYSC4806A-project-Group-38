@@ -11,6 +11,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration class for setting up Spring Security within the application.
+ *
+ * This class defines security filters, authentication, authorization rules,
+ * password encoding, user detail loading, and exception handling.
+ *
+ * It customizes the login and logout behavior, disables CSRF for simplicity
+ * and handles HTMX requests by returning 401 instead of redirecting.
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -21,13 +31,22 @@ public class SecurityConfig {
         this.userRepository = userRepository;
     }
 
-
-
+    /**
+     * Defines the PasswordEncoder to be used for hashing user passwords.
+     *
+     * @return a BCryptPasswordEncoder instance
+     */
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
+    /**
+     * Configures the main security filter chain for handling authentication,
+     * authorization, login, logout, CSRF, and exception handling.
+     *
+     * @param http the HttpSecurity object used to configure security settings
+     * @return a fully built SecurityFilterChain
+     * @throws Exception if a configuration error occurs
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -62,6 +81,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Provides a custom UserDetailsService implementation that
+     * loads users from the application's UserRepository.
+     *
+     * Users are matched by their username. An exception is thrown if the user
+     * cannot be found. Returned users are assigned the role USER.
+     *
+     * @return a UserDetailsService capable of loading users from the database
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {

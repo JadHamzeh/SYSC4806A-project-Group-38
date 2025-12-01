@@ -186,6 +186,13 @@ public class PerkController {
             return "redirect:/login";
         }
 
+        if (!expiryDate.isAfter(LocalDate.now())) {
+            model.addAttribute("error", "Expiry date must be a future date.");
+            model.addAttribute("hxTrigger", "invalidDate");
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
+
         try {
             perkService.createPerk(title, description, region, membershipType, user.getId(), expiryDate);
             return "redirect:/perks/dashboard";
@@ -207,7 +214,7 @@ public class PerkController {
      * @param expiryDate     the date when the perk expires
      * @param principal      the authenticated user principal
      * @param model          the Spring MVC model to pass data to the view
-     * @return success message fragment on success
+     * @return success message fragment on success or the form with error on failure
      */
     @PostMapping("/create-fragment")
     public String createPerkFragment(
@@ -219,6 +226,7 @@ public class PerkController {
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
             Model model) {
 
+        // Check for user authentication
         if (principal == null) {
             model.addAttribute("error", "Please log in to create perks");
             model.addAttribute("memberships", membershipTypeRepository.findAll());
@@ -231,6 +239,20 @@ public class PerkController {
             model.addAttribute("memberships", membershipTypeRepository.findAll());
             return "fragments/new-perk-form :: new-perk-form";
         }
+
+        // --- ADDED VALIDATION: Check if expiry date is in the future ---
+        if (!expiryDate.isAfter(LocalDate.now())) {
+            model.addAttribute("error", "Expiry date must be a future date.");
+            // Pass back the current form data to re-populate fields
+            model.addAttribute("title", title);
+            model.addAttribute("description", description);
+            model.addAttribute("region", region);
+            model.addAttribute("selectedMembership", membershipType);
+
+            model.addAttribute("memberships", membershipTypeRepository.findAll());
+            return "fragments/new-perk-form :: new-perk-form";
+        }
+        // -------------------------------------------------------------
 
         try {
             perkService.createPerk(title, description, region, membershipType, user.getId(), expiryDate);

@@ -3,22 +3,22 @@
 <body>
 
 <th:block th:fragment="membership-section">
-    <div class="membership-section" id="membership-section">
-        <h2 class="section-title">My Memberships</h2>
+    <div id="membership-section" style="border: none; background: none;">
+        <h2 style="color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667eea; font-size: 24px;">My Memberships</h2>
 
         <!-- Add Membership Form -->
-        <div class="add-membership-form">
+        <div style="margin-bottom: 20px; background: none;">
             <form hx-post="/profile/add-membership"
                   hx-target="#membership-section"
-                  hx-swap="outerHTML">
+                  hx-swap="outerHTML" style="background: none;">
                 <div style="display: flex; gap: 15px; align-items: end;">
                     <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
                             Add a Membership
                         </label>
                         <select name="membershipTypeId"
                                 required
-                                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
                             <option value="">Select a membership...</option>
                             <option th:each="membership : ${allMemberships}"
                                     th:value="${membership.id}"
@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <button type="submit"
-                            style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; font-weight: 500;">
                         Add
                     </button>
                 </div>
@@ -41,9 +41,9 @@
                  style="display: grid; gap: 10px;">
                 <div th:each="membership : ${userMemberships}"
                      class="membership-item"
-                     style="padding: 15px; background: #f8f9fa; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                     style="padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-weight: 600; color: #333;" th:text="${membership.name}">Membership</span>
+                        <span style="font-weight: 600; color: #ffffff;" th:text="${membership.name}">Membership</span>
                     </div>
                     <form hx-post="/profile/remove-membership"
                           hx-target="#membership-section"
@@ -53,7 +53,7 @@
                         <input type="hidden" name="membershipTypeId" th:value="${membership.id}" />
                         <button type="submit"
                                 class="delete-btn"
-                                style="background: transparent; border: none; color: #dc3545; cursor: pointer; padding: 5px 10px; border-radius: 5px;">
+                                style="background: transparent; border: none; color: #dc3545; cursor: pointer; padding: 5px 10px; border-radius: 5px; transition: background 0.2s;">
                             Remove
                         </button>
                     </form>

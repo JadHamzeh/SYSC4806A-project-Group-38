@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * REST controller that manages user-related API operations.
+ *
+ * This controller provides endpoints for user registration, retrieving user details,
+ * and assigning membership types to users.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
@@ -21,6 +27,18 @@ public class UserRestController {
     @Autowired
     private MembershipService membershipService;
 
+    /**
+     * Registers a new user using the provided username and password.
+     *
+     * The payload must contain the fields:
+     * - username
+     * - password
+     *
+     * If the username already exists, an error response is returned.
+     *
+     * @param payload map containing user registration details
+     * @return a response containing the new user's ID and username, or an error message
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> payload) {
         try {
@@ -41,6 +59,19 @@ public class UserRestController {
         }
     }
 
+    /**
+     * Retrieves a user's information by their ID.
+     *
+     * The response includes:
+     * - user ID
+     * - username
+     * - memberships assigned to the user
+     *
+     * If the user does not exist, a not found response is returned.
+     *
+     * @param userId the ID of the user to retrieve
+     * @return a response containing user details or a not found status
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUser(@PathVariable Long userId) {
         Optional<User> user = userService.findById(userId);
@@ -55,6 +86,18 @@ public class UserRestController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Assigns a membership type to the specified user.
+     *
+     * The payload must contain:
+     * - membershipTypeId
+     *
+     * If either the user or the membership type does not exist, a not found response is returned.
+     *
+     * @param userId the ID of the user receiving the membership
+     * @param payload map containing the membershipTypeId
+     * @return a response containing the created user membership record or an error message
+     */
     @PostMapping("/{userId}/memberships")
     public ResponseEntity<?> addMembership(@PathVariable Long userId, @RequestBody Map<String, Long> payload) {
         try {

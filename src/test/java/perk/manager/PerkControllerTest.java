@@ -9,9 +9,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -307,4 +305,56 @@ class PerkControllerTest {
         assertEquals("redirect:/perks/dashboard", viewName);
         verify(perkService).vote(1L, false);
     }
+
+    @Test
+    void testUpvotePerkFragment_AlreadyUpvoted() {
+        MockHttpSession session = new MockHttpSession();
+        HashMap<Long, Boolean> votedPerks = new HashMap<>();
+        votedPerks.put(1L, true);
+        session.setAttribute("votedPerks", votedPerks);
+
+        when(perkRepository.findById(1L)).thenReturn(Optional.of(perk));
+
+        String viewName = perkController.upvotePerkFragment(1L, session, model);
+
+        verify(perkService).vote(1L, false);
+        assertFalse(((HashMap<Long, Boolean>) session.getAttribute("votedPerks")).containsKey(1L));
+    }
+
+    @Test
+    void testDownvotePerkFragment_AlreadyDownvoted() {
+        MockHttpSession session = new MockHttpSession();
+        HashMap<Long, Boolean> votedPerks = new HashMap<>();
+        votedPerks.put(1L, false);
+        session.setAttribute("votedPerks", votedPerks);
+
+        when(perkRepository.findById(1L)).thenReturn(Optional.of(perk));
+
+        String viewName = perkController.downvotePerkFragment(1L, session, model);
+
+        verify(perkService).vote(1L, true);
+        assertFalse(((HashMap<Long, Boolean>) session.getAttribute("votedPerks")).containsKey(1L));
+    }
+
+    @Test
+    void testPerkSearchFragment_NoResults() {
+        when(perkService.searchPerks("NonExistent", null)).thenReturn(Collections.emptyList());
+
+        String viewName = perkController.perkSearchFragment("NonExistent", null, "votes", principal, model);
+
+        assertEquals("fragments/perk-list :: perk-list", viewName);
+        verify(model).addAttribute("perks", Collections.emptyList());
+    }
+
+    @Test
+    void testPerkSearchFragment_FilterByMembershipAndKeyword() {
+        when(perkService.searchPerks("Aeroplan", "travel")).thenReturn(Arrays.asList(perk));
+
+        String viewName = perkController.perkSearchFragment("Aeroplan", "travel", "votes", principal, model);
+
+        verify(perkService).searchPerks("Aeroplan", "travel");
+        verify(model).addAttribute("selectedMembership", "Aeroplan");
+        verify(model).addAttribute("keyword", "travel");
+    }
+
 }

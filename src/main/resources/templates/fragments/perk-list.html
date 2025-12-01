@@ -1,5 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        /* MORE SPECIFIC SELECTORS with !important */
+        .perk-footer .vote-section .vote-btn {
+            background: #f8f9fa !important;
+            border: 2px solid #dee2e6 !important;
+            padding: 8px 12px !important;
+            cursor: pointer !important;
+            border-radius: 6px !important;
+            transition: all 0.3s ease !important;
+            font-size: 16px !important;
+            margin: 0 5px !important;
+            color: #333 !important;
+        }
+
+        .perk-footer .vote-section .vote-btn:hover {
+            background: #e9ecef !important;
+            transform: scale(1.05) !important;
+        }
+
+        /* VERY SPECIFIC for active states */
+        .perk-footer .vote-section .vote-btn.active-upvote,
+        .perk-footer .vote-section .vote-btn.vote-btn.active-upvote {
+            background: #4CAF50 !important;
+            color: white !important;
+            border-color: #4CAF50 !important;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3) !important;
+        }
+
+        .perk-footer .vote-section .vote-btn.active-downvote,
+        .perk-footer .vote-section .vote-btn.vote-btn.active-downvote {
+            background: #f44336 !important;
+            color: white !important;
+            border-color: #f44336 !important;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3) !important;
+        }
+
+        .perk-footer .vote-section .vote-btn.active-upvote:hover {
+            background: #45a049 !important;
+        }
+
+        .perk-footer .vote-section .vote-btn.active-downvote:hover {
+            background: #da190b !important;
+        }
+    </style>
+</head>
 <body>
 
 <th:block th:fragment="perk-list">
@@ -14,20 +60,30 @@
                 <span>📍 <span th:text="${perk.region}">Region</span></span>
                 <span>📅 Expires: <span th:text="${#temporals.format(perk.expiryDate, 'MMM dd, yyyy')}">Date</span></span>
             </div>
-            <div class="perk-footer">
+            <div class="perk-footer" th:id="'perk-footer-' + ${perk.id}">
                 <div class="vote-section">
+                    <!-- Upvote button with both class and inline style -->
                     <button class="vote-btn"
+                            th:classappend="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == true} ? 'active-upvote' : ''"
+                            th:style="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == true} ?
+                                     'background-color: #4CAF50 !important; color: white !important; border-color: #4CAF50 !important; box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3) !important;' : ''"
                             hx-post="/perks/${perk.id}/upvote-fragment"
                             th:hx-post="@{/perks/{id}/upvote-fragment(id=${perk.id})}"
-                            hx-target="#perk-${perk.id} .vote-section"
-                            th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                            hx-target="#perk-footer-${perk.id}"
+                            th:hx-target="'#perk-footer-' + ${perk.id}"
                             hx-swap="outerHTML">👍</button>
+
                     <span class="votes-count" th:text="${perk.votes} + ' votes'">0 votes</span>
+
+                    <!-- Downvote button with both class and inline style -->
                     <button class="vote-btn"
+                            th:classappend="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == false} ? 'active-downvote' : ''"
+                            th:style="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == false} ?
+                                     'background-color: #f44336 !important; color: white !important; border-color: #f44336 !important; box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3) !important;' : ''"
                             hx-post="/perks/${perk.id}/downvote-fragment"
                             th:hx-post="@{/perks/{id}/downvote-fragment(id=${perk.id})}"
-                            hx-target="#perk-${perk.id} .vote-section"
-                            th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
+                            hx-target="#perk-footer-${perk.id}"
+                            th:hx-target="'#perk-footer-' + ${perk.id}"
                             hx-swap="outerHTML">👎</button>
                 </div>
                 <small style="color: #999;">by <span th:text="${perk.createdBy.username}">User</span></small>
@@ -38,31 +94,42 @@
     <div class="no-perks" th:if="${perks == null or perks.isEmpty()}">
         <h2>No perks found</h2>
         <p>Be the first to create one!</p>
-        <button th:if="${isLoggedIn}" 
-                hx-get="/perks/new" 
-                hx-target="#modal-content" 
+        <button th:if="${isLoggedIn}"
+                hx-get="/perks/new"
+                hx-target="#modal-content"
                 hx-swap="innerHTML"
                 onclick="document.getElementById('modal').classList.add('show')"
-                class="btn btn-primary" 
+                class="btn btn-primary"
                 style="margin-top: 20px;">Create Perk</button>
     </div>
 </th:block>
 
 <th:block th:fragment="vote-section">
-    <div class="vote-section">
-        <button class="vote-btn"
-                hx-post="/perks/${perk.id}/upvote-fragment"
-                th:hx-post="@{/perks/{id}/upvote-fragment(id=${perk.id})}"
-                hx-target="#perk-${perk.id} .vote-section"
-                th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
-                hx-swap="outerHTML">👍</button>
-        <span class="votes-count" th:text="${perk.votes} + ' votes'">0 votes</span>
-        <button class="vote-btn"
-                hx-post="/perks/${perk.id}/downvote-fragment"
-                th:hx-post="@{/perks/{id}/downvote-fragment(id=${perk.id})}"
-                hx-target="#perk-${perk.id} .vote-section"
-                th:hx-target="'#perk-' + ${perk.id} + ' .vote-section'"
-                hx-swap="outerHTML">👎</button>
+    <div class="perk-footer" th:id="'perk-footer-' + ${perk.id}">
+        <div class="vote-section">
+            <!-- Upvote button for fragment -->
+            <button class="vote-btn"
+                    th:classappend="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == true} ? 'active-upvote' : ''"
+                    th:style="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == true} ?
+                             'background-color: #4CAF50 !important; color: white !important; border-color: #4CAF50 !important; box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3) !important;' : ''"
+                    hx-post="/perks/${perk.id}/upvote-fragment"
+                    th:hx-post="@{/perks/{id}/upvote-fragment(id=${perk.id})}"
+                    hx-target="#perk-footer-${perk.id}"
+                    th:hx-target="'#perk-footer-' + ${perk.id}"
+                    hx-swap="outerHTML">👍</button>
+            <span class="votes-count" th:text="${perk.votes} + ' votes'">0 votes</span>
+            <!-- Downvote button for fragment -->
+            <button class="vote-btn"
+                    th:classappend="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == false} ? 'active-downvote' : ''"
+                    th:style="${votedPerks != null and votedPerks.containsKey(perk.id) and votedPerks.get(perk.id) == false} ?
+                             'background-color: #f44336 !important; color: white !important; border-color: #f44336 !important; box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3) !important;' : ''"
+                    hx-post="/perks/${perk.id}/downvote-fragment"
+                    th:hx-post="@{/perks/{id}/downvote-fragment(id=${perk.id})}"
+                    hx-target="#perk-footer-${perk.id}"
+                    th:hx-target="'#perk-footer-' + ${perk.id}"
+                    hx-swap="outerHTML">👎</button>
+        </div>
+        <small style="color: #999;">by <span th:text="${perk.createdBy.username}">User</span></small>
     </div>
 </th:block>
 

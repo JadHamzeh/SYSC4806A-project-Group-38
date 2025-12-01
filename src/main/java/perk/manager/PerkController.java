@@ -36,7 +36,8 @@ public class PerkController {
      */
     @GetMapping("/dashboard")
     public String perksPage(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-                            Model model) {
+                            Model model,
+                            HttpSession session) {  // Add HttpSession parameter
         if (principal != null) {
             User user = userService.findByUsername(principal.getUsername()).orElse(null);
             model.addAttribute("isLoggedIn", true);
@@ -45,11 +46,17 @@ public class PerkController {
             model.addAttribute("isLoggedIn", false);
         }
 
+        // Add votedPerks to the model from session
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) session.getAttribute("votedPerks");
+        if (votedPerks == null) {
+            votedPerks = new HashMap<>();
+        }
+        model.addAttribute("votedPerks", votedPerks);
+
         model.addAttribute("perks", perkService.getAllPerks());
         model.addAttribute("memberships", membershipTypeRepository.findAll());
         return "dashboard";
     }
-
     /**
      * Returns an HTMX fragment containing filtered and sorted perks.
      * Used for dynamic updates without full page reloads.
@@ -66,7 +73,8 @@ public class PerkController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-            Model model) {
+            Model model,
+            HttpSession session) {  // Add HttpSession parameter
 
         List<Perk> perks = perkService.searchPerks(membershipType, keyword);
 
@@ -83,6 +91,13 @@ public class PerkController {
         } else {
             model.addAttribute("isLoggedIn", false);
         }
+
+        // Add votedPerks to the model from session
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) session.getAttribute("votedPerks");
+        if (votedPerks == null) {
+            votedPerks = new HashMap<>();
+        }
+        model.addAttribute("votedPerks", votedPerks);
 
         model.addAttribute("perks", perks);
         model.addAttribute("sortBy", sortBy);
@@ -108,7 +123,8 @@ public class PerkController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false, defaultValue = "votes") String sortBy,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-            Model model) {
+            Model model,
+            HttpSession session) {  // Add HttpSession parameter
 
         List<Perk> perks = perkService.searchPerks(membershipType, keyword);
 
@@ -125,6 +141,13 @@ public class PerkController {
         } else {
             model.addAttribute("isLoggedIn", false);
         }
+
+        // Add votedPerks to the model from session
+        HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) session.getAttribute("votedPerks");
+        if (votedPerks == null) {
+            votedPerks = new HashMap<>();
+        }
+        model.addAttribute("votedPerks", votedPerks);
 
         model.addAttribute("perks", perks);
         model.addAttribute("sortBy", sortBy);
@@ -269,6 +292,7 @@ public class PerkController {
      * Returns the updated vote section fragment with new vote count.
      *
      * @param perkId the ID of the perk to upvote
+     * @param sesh   the HTTP session for storing vote state
      * @param model  the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the vote section
      */
@@ -299,6 +323,9 @@ public class PerkController {
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
         }
+
+        model.addAttribute("votedPerks", votedPerks);
+
         return "fragments/perk-list :: vote-section";
     }
 
@@ -307,11 +334,12 @@ public class PerkController {
      * Returns the updated vote section fragment with new vote count.
      *
      * @param perkId the ID of the perk to downvote
+     * @param sesh   the HTTP session for storing vote state
      * @param model  the Spring MVC model to pass data to the view
      * @return the Thymeleaf fragment path for the vote section
      */
     @PostMapping("/{perkId}/downvote-fragment")
-    public String downvotePerkFragment(@PathVariable Long perkId,HttpSession sesh, Model model) {
+    public String downvotePerkFragment(@PathVariable Long perkId, HttpSession sesh, Model model) {
         HashMap<Long, Boolean> votedPerks = (HashMap<Long, Boolean>) sesh.getAttribute("votedPerks");
         if (votedPerks == null){
             votedPerks = new HashMap<>();
@@ -337,6 +365,9 @@ public class PerkController {
         if (perkOpt.isPresent()) {
             model.addAttribute("perk", perkOpt.get());
         }
+
+        model.addAttribute("votedPerks", votedPerks);
+
         return "fragments/perk-list :: vote-section";
     }
 
@@ -361,11 +392,9 @@ public class PerkController {
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);
         } else if (lastVote == true) {
-
             perkService.vote(perkId, false);
             votedPerks.remove(perkId);
         } else if (lastVote == false) {
-
             perkService.vote(perkId, true);
             perkService.vote(perkId, true);
             votedPerks.put(perkId, true);

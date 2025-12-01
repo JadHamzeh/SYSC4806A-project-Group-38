@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5; /* Matched provided stylesheet */
+            background: #f5f5f5;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -24,12 +24,11 @@
             padding: 20px;
         }
 
-        /* Container style adapted for centered form */
         .login-container {
             background-color: #fff;
             padding: 2.5rem;
-            border-radius: 10px; /* Matched dashboard radius */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Matched dashboard shadow */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 350px;
             text-align: center;
         }
@@ -59,7 +58,6 @@
             border: 1px solid #f5c6cb;
         }
 
-        /* Form Group Styles from provided stylesheet */
         .form-group {
             margin-bottom: 1.2rem;
             text-align: left;
@@ -79,7 +77,6 @@
             border-radius: 5px;
             box-sizing: border-box;
             font-size: 14px;
-            transition: border-color 0.3s;
         }
 
         .form-group input:focus {
@@ -87,44 +84,25 @@
             border-color: #667eea;
         }
 
-        /* Unified Button Styles */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
         .login-button {
             width: 100%;
-            padding: 10px; /* Use smaller btn padding */
+            padding: 12px;
             font-size: 16px;
             font-weight: bold;
-            /* Applying btn-primary styles */
             background: #667eea;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .login-button:hover {
             background: #5568d3;
-            transform: none;
             box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
         }
 
@@ -152,7 +130,7 @@
         .back-link {
             margin-top: 1.5rem;
             text-decoration: none;
-            color: #667eea; /* Changed color to match primary theme */
+            color: #667eea;
             font-weight: 500;
             display: inline-block;
             padding: 8px 16px;
@@ -167,8 +145,11 @@
         }
 
         .htmx-indicator {
-            display: inline-block;
-            margin-left: 10px;
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline;
         }
     </style>
 </head>
@@ -201,7 +182,7 @@
         </div>
 
         <button type="submit" class="login-button">
-            Login
+            <span>Login</span>
             <span class="htmx-indicator">⏳</span>
         </button>
     </form>

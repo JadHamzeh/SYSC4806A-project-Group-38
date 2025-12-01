@@ -27,7 +27,7 @@ public class UserController {
 
     /**
      * Displays the application's home page.
-     * <p>
+     *
      * This is the landing page of the application, accessible to all users
      * regardless of authentication status.
      *
@@ -40,7 +40,7 @@ public class UserController {
 
     /**
      * Displays the login page.
-     * <p>
+     *
      * This page allows users to authenticate and access protected resources
      * within the application.
      *
@@ -53,7 +53,7 @@ public class UserController {
 
     /**
      * Displays the signup page.
-     * <p>
+     *
      * This page provides a registration form for new users to create an account.
      *
      * @return the name of the view template "signup"
@@ -65,7 +65,7 @@ public class UserController {
 
     /**
      * Processes user registration.
-     * <p>
+     *
      * This method validates that the username is unique, creates a new user
      * account with the provided credentials, and redirects to the login page
      * upon successful registration. If the username already exists or registration
@@ -102,12 +102,12 @@ public class UserController {
 
     /**
      * Displays the authenticated user's profile page.
-     * <p>
+     *
      * This method retrieves the currently authenticated user's information
      * and adds it to the model for display. If no user is authenticated,
      * the profile page will be displayed without user data.
-     * <p>
-     * <p>
+     *
+     *
      * AuthenticationPrincipal the Spring Security principal representing the authenticated user, or null if no user is authenticated.
      *
      * @param model the Spring MVC model for passing data to the view
@@ -129,6 +129,17 @@ public class UserController {
         return "profile";
     }
 
+    /**
+     * Adds a membership type to the currently authenticated user's profile.
+     *
+     * The method retrieves the logged-in user, assigns the selected membership type,
+     * reloads updated membership data, and returns a fragment for partial page updates.
+     *
+     * @param membershipTypeId the ID of the membership type to add
+     * @param principal the authenticated user from the security context
+     * @param model the model used to pass updated user and membership data to the view
+     * @return the membership list fragment to re-render on the client
+     */
     @PostMapping("/profile/add-membership")
     public String addMembership(@RequestParam Long membershipTypeId,
                                 @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
@@ -153,6 +164,17 @@ public class UserController {
         return "fragments/membership-list :: membership-section";
     }
 
+    /**
+     * Removes a membership type from the currently authenticated user's profile.
+     *
+     * The method looks up the user, removes the selected membership type if present,
+     * reloads updated membership information, and returns a fragment for page updates.
+     *
+     * @param membershipTypeId the ID of the membership type to remove
+     * @param principal the authenticated user from the security context
+     * @param model the model used to pass updated user and membership data to the view
+     * @return the membership list fragment to re-render on the client
+     */
     @PostMapping("/profile/remove-membership")
     public String removeMembership(@RequestParam Long membershipTypeId,
                                 @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,

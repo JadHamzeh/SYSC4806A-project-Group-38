@@ -21,10 +21,10 @@
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
                     Title <span style="color: #dc3545;">*</span>
                 </label>
-                <input type="text" 
-                       name="title" 
-                       required 
-                       placeholder="e.g., 10% off Movie Tickets"
+                <input type="text"
+                       name="title"
+                       required
+                       th:value="${title}" placeholder="e.g., 10% off Movie Tickets"
                        style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
             </div>
 
@@ -32,9 +32,9 @@
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
                     Description <span style="color: #dc3545;">*</span>
                 </label>
-                <textarea name="description" 
-                          required 
-                          placeholder="Provide details about this perk..."
+                <textarea name="description"
+                          required
+                          th:text="${description}" placeholder="Provide details about this perk..."
                           style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 100px;"></textarea>
             </div>
 
@@ -68,10 +68,10 @@
                 <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
                     Expiry Date <span style="color: #dc3545;">*</span>
                 </label>
-                <input type="date" 
-                       name="expiryDate" 
+                <input type="date"
+                       name="expiryDate"
                        required
-                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                       th:value="${expiryDate}" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
             </div>
 
             <div style="display: flex; gap: 15px; margin-top: 30px;">

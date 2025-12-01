@@ -3,90 +3,88 @@
 <body>
 
 <th:block th:fragment="new-perk-form">
-    <div style="position: relative;">
-        <button onclick="document.getElementById('modal').classList.remove('show')" 
-                style="position: absolute; top: -10px; right: -10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 18px;">×</button>
-        
-        <h1 style="color: #667eea; margin-bottom: 30px; text-align: center; font-size: 28px;">🎁 Create New Perk</h1>
+    <button onclick="document.getElementById('modal').classList.remove('show')"
+            style="position: absolute; top: 10px; right: 10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 18px; line-height: 1; z-index: 10;">×</button>
 
-        <div th:if="${error}" class="alert alert-error" th:text="${error}" style="padding: 12px; border-radius: 5px; margin-bottom: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-            Error message
+    <h1 style="color: #667eea; margin-bottom: 30px; text-align: center; font-size: 28px;">🎁 Create New Perk</h1>
+
+    <div th:if="${error}" style="padding: 12px; border-radius: 5px; margin-bottom: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;" th:text="${error}">
+        Error message
+    </div>
+
+    <form hx-post="/perks/create-fragment"
+          hx-target="#modal-content"
+          hx-swap="innerHTML">
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
+                Title <span style="color: #dc3545;">*</span>
+            </label>
+            <input type="text"
+                   name="title"
+                   required
+                   placeholder="e.g., 10% off Movie Tickets"
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
         </div>
 
-        <form hx-post="/perks/create-fragment" 
-              hx-target="#modal-content"
-              hx-swap="innerHTML">
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
-                    Title <span style="color: #dc3545;">*</span>
-                </label>
-                <input type="text" 
-                       name="title" 
-                       required 
-                       placeholder="e.g., 10% off Movie Tickets"
-                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-            </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
+                Description <span style="color: #dc3545;">*</span>
+            </label>
+            <textarea name="description"
+                      required
+                      placeholder="Provide details about this perk..."
+                      style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 100px;"></textarea>
+        </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
-                    Description <span style="color: #dc3545;">*</span>
-                </label>
-                <textarea name="description" 
-                          required 
-                          placeholder="Provide details about this perk..."
-                          style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 100px;"></textarea>
-            </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
+                Membership Type <span style="color: #dc3545;">*</span>
+            </label>
+            <select name="membershipType"
+                    required
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                <option value="">Select a membership...</option>
+                <option th:each="membership : ${memberships}"
+                        th:value="${membership.name}"
+                        th:text="${membership.name}">
+                </option>
+            </select>
+        </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
-                    Membership Type <span style="color: #dc3545;">*</span>
-                </label>
-                <select name="membershipType" 
-                        required
-                        style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-                    <option value="">Select a membership...</option>
-                    <option th:each="membership : ${memberships}" 
-                            th:value="${membership.name}" 
-                            th:text="${membership.name}">
-                    </option>
-                </select>
-            </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
+                Region <span style="color: #dc3545;">*</span>
+            </label>
+            <input type="text"
+                   name="region"
+                   required
+                   placeholder="e.g., Canada, Ontario, Toronto"
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+        </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
-                    Region <span style="color: #dc3545;">*</span>
-                </label>
-                <input type="text" 
-                       name="region" 
-                       required 
-                       placeholder="e.g., Canada, Ontario, Toronto"
-                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-            </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">
+                Expiry Date <span style="color: #dc3545;">*</span>
+            </label>
+            <input type="date"
+                   name="expiryDate"
+                   required
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+        </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
-                    Expiry Date <span style="color: #dc3545;">*</span>
-                </label>
-                <input type="date" 
-                       name="expiryDate" 
-                       required
-                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-            </div>
-
-            <div style="display: flex; gap: 15px; margin-top: 30px;">
-                <button type="submit" 
-                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                    Create Perk
-                </button>
-                <button type="button" 
-                        onclick="document.getElementById('modal').classList.remove('show')"
-                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; background: #6c757d; color: white;">
-                    Cancel
-                </button>
-            </div>
-        </form>
-    </div>
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit"
+                    style="flex: 1; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; background: #667eea; color: white; transition: all 0.3s ease;">
+                Create Perk
+            </button>
+            <button type="button"
+                    onclick="document.getElementById('modal').classList.remove('show')"
+                    style="flex: 1; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; background: #6c757d; color: white; transition: all 0.3s ease;">
+                Cancel
+            </button>
+        </div>
+    </form>
 </th:block>
 
 <th:block th:fragment="success-message">

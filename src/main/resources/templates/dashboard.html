@@ -213,7 +213,6 @@
             color: #666;
         }
 
-        /* HTMX loading indicator */
         .htmx-indicator {
             display: none;
         }
@@ -226,13 +225,11 @@
             display: inline;
         }
 
-        /* Smooth transitions for HTMX swaps */
         .htmx-swapping {
             opacity: 0;
             transition: opacity 200ms ease-out;
         }
 
-        /* Modal styles */
         #modal {
             display: none;
             position: fixed;
@@ -338,7 +335,7 @@
 
 <div id="modal">
     <div class="modal-content">
-        <div id="modal-content">
+        <div id="modal-content" style="background: none; padding: 0; box-shadow: none; border: none;">
         </div>
     </div>
 </div>
@@ -357,9 +354,34 @@
 
     document.body.addEventListener('htmx:responseError', function (event) {
         if (event.detail.xhr.status === 401) {
-            // Open modal and load login page
-            document.getElementById('modal').classList.add('show');
-            htmx.ajax('GET', '/login', { target: '#modal-content' });
+            // Open modal and load styled login page
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+
+            modalContent.innerHTML = `
+                <h1 style="color: #667eea; margin-bottom: 1.5rem; font-size: 28px; text-align: center;">Login Required</h1>
+                <div style="padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; background-color: #f8d7da; color: #ff0018; border: 1px solid #f5c6cb;">
+                    Please log in to perform this action.
+                </div>
+                <form action="/login" method="POST">
+                    <div style="margin-bottom: 1.2rem; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px; color: #333; font-weight: 500;">Username:</label>
+                        <input type="text" id="username" name="username" required autofocus style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 1.2rem; text-align: left;">
+                        <label style="display: block; margin-bottom: 5px; color: #333; font-weight: 500;">Password:</label>
+                        <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 14px;">
+                    </div>
+                    <button type="submit" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;">
+                        Login
+                    </button>
+                </form>
+                <p style="margin-top: 1.2rem; font-size: 14px; color: #555; text-align: center;">
+                    Don't have an account? <a href="/signup" style="color: #667eea; text-decoration: none; font-weight: 600;">Sign Up</a>
+                </p>
+            `;
+
+            modal.classList.add('show');
         }
     });
 </script>
